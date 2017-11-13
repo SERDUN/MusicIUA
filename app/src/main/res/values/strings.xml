@@ -1,0 +1,5 @@
+<resources>
+
+    <string name="app_name">MusickIUA</string>
+    <string name="message_exit_from_app">exit</string>
+</resources>
