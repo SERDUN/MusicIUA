@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="base_url">http://mg15.i.ua/</string>
     <string name="login_url">https://passport.i.ua/login/?</string>
+    <string name="playlist_url">http://music.i.ua/user/</string>
     <string name="local_url">http://192.168.1.170:8081/test</string>
+    <string name="base_url">http://music.i.ua/</string>
+
 
 </resources>

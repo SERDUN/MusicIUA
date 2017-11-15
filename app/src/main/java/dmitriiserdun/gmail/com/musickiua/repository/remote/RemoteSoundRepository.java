@@ -1,17 +1,30 @@
 package dmitriiserdun.gmail.com.musickiua.repository.remote;
 
+import android.net.Uri;
+import android.util.Log;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
 import java.io.IOException;
+import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import dmitriiserdun.gmail.com.musickiua.R;
 import dmitriiserdun.gmail.com.musickiua.api.RetrofitFactory;
 import dmitriiserdun.gmail.com.musickiua.base.MusicApp;
+import dmitriiserdun.gmail.com.musickiua.model.Playlist;
 import dmitriiserdun.gmail.com.musickiua.model.User;
 import dmitriiserdun.gmail.com.musickiua.repository.SoundRepository;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -40,6 +53,7 @@ public class RemoteSoundRepository implements SoundRepository {
 
     private RemoteSoundRepository() {
     }
+
     @Override
     public Observable<Integer> login(String login, String pass) {
         final HashMap<String, String> form = new HashMap<>();
@@ -74,10 +88,46 @@ public class RemoteSoundRepository implements SoundRepository {
 
     }
 
+    @Override
+    public Observable<List<Playlist>> getPlaylists(Integer userId) {
+        return  RetrofitFactory.getService().getPlaylistHtml(userId).flatMap(new Func1<Response<ResponseBody>, Observable<List<Playlist>>>() {
+            @Override
+            public Observable<List<Playlist>> call(Response<ResponseBody> responseBodyResponse) {
+                try {
+                    return Observable.just(getPlatlistsWithHtml(responseBodyResponse.body().string()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
     private String findSubscribeText(String html, String firstKey, String secondKey) {
         int startCopyIndex = html.indexOf(firstKey) + firstKey.length();
         int endCopyIndex = html.indexOf(secondKey, startCopyIndex);
         return html.substring(startCopyIndex, endCopyIndex);
 
+    }
+
+
+    private List<Playlist> getPlatlistsWithHtml(String html){
+        ArrayList<Playlist> playsts=new ArrayList<>();
+            Document doc = Jsoup.parse(html);
+            Elements metaElements = doc.select("table[id*=plTable]");
+            Elements metaElements1 = metaElements.select("tr");
+            metaElements1.remove(0);
+            metaElements1.remove(metaElements1.size() - 1);
+
+            for (Element element : metaElements1) {
+                String sizeSound = element.select("td.align_right").get(0).text();
+                String namePlaylist = element.select("a").text();
+                String idPlayst = element.select("a").first().attr("href").replaceFirst(".*/([^/?]+).*", "$1");
+                playsts.add(new Playlist(namePlaylist,idPlayst,sizeSound));
+            }
+
+
+        return  playsts;
     }
 }

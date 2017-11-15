@@ -3,6 +3,8 @@ package dmitriiserdun.gmail.com.musickiua.base;
 import android.app.Application;
 import android.support.multidex.MultiDex;
 
+import com.orhanobut.hawk.Hawk;
+
 
 /**
  * Created by dmitro on 31.10.17.
@@ -16,6 +18,8 @@ public class MusicApp extends Application {
     public void onCreate() {
         super.onCreate();
         MultiDex.install(this);
+        Hawk.init(this).build();
+
         instance = this;
     }
 

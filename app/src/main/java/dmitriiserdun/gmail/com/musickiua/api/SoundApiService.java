@@ -7,8 +7,12 @@ import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
+import retrofit2.http.Path;
+import retrofit2.http.Query;
 import retrofit2.http.Url;
 import rx.Observable;
 
@@ -17,11 +21,6 @@ import rx.Observable;
  */
 
 public interface SoundApiService {
-    @Headers({"Content-Type: application/x-www-form-urlencoded"})
-    @FormUrlEncoded
-    @POST
-    public Call<ResponseBody> test(@Url String url, @FieldMap HashMap<String, String> field);
-
 
     @Headers({"Content-Type: application/x-www-form-urlencoded"})
     @FormUrlEncoded
@@ -31,7 +30,11 @@ public interface SoundApiService {
 
     @Headers({"Content-Type: text/html; charset=windows-1251",
             "Connection: keep-alive"})
-
     @POST
     public Observable<Response<ResponseBody>> login(@Url String url);
+
+
+    @GET("user/{userId}/")
+    public Observable<Response<ResponseBody>> getPlaylistHtml(@Path("userId") Integer userId);
+
 }

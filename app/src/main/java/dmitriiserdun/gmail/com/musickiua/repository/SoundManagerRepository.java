@@ -1,5 +1,8 @@
 package dmitriiserdun.gmail.com.musickiua.repository;
 
+import java.util.List;
+
+import dmitriiserdun.gmail.com.musickiua.model.Playlist;
 import dmitriiserdun.gmail.com.musickiua.model.User;
 import io.reactivex.annotations.NonNull;
 import rx.Observable;
@@ -28,5 +31,10 @@ public class SoundManagerRepository implements SoundRepository {
     @Override
     public Observable<Integer> login(String login,String pass) {
         return remoteSoundRepository.login(login,pass);
+    }
+
+    @Override
+    public Observable<List<Playlist>> getPlaylists(Integer userId) {
+        return remoteSoundRepository.getPlaylists(userId);
     }
 }

@@ -19,8 +19,6 @@ public class LoginActivity extends BaseActivity {
     private LoginContract.WelcomeView view;
     private LoginContract.WelcomePresenter presenter;
 
-    WebView webView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

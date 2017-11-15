@@ -43,8 +43,6 @@ public class RetrofitFactory {
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(getOkHttpClient());
-
-
         return builder.build();
 
     }

@@ -1,5 +1,8 @@
 package dmitriiserdun.gmail.com.musickiua.repository;
 
+import java.util.List;
+
+import dmitriiserdun.gmail.com.musickiua.model.Playlist;
 import dmitriiserdun.gmail.com.musickiua.model.User;
 import io.reactivex.annotations.NonNull;
 import rx.Observable;
@@ -11,5 +14,8 @@ import rx.Observable;
 public interface SoundRepository {
     @NonNull
     Observable<Integer> login(String login,String pass);
+
+    @NonNull
+    Observable<List<Playlist>> getPlaylists(Integer userId);
 
 }
