@@ -1,15 +1,17 @@
-package dmitriiserdun.gmail.com.musickiua.services;
+package dmitriiserdun.gmail.com.musickiua.api;
 
-import java.net.CookieManager;
-import java.net.CookiePolicy;
+import com.franmontiel.persistentcookiejar.ClearableCookieJar;
+import com.franmontiel.persistentcookiejar.PersistentCookieJar;
+import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
+import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 
 import dmitriiserdun.gmail.com.musickiua.R;
 import dmitriiserdun.gmail.com.musickiua.base.MusicApp;
 import okhttp3.OkHttpClient;
-import retrofit2.GsonConverterFactory;
 import retrofit2.Retrofit;
-import retrofit2.RxJavaCallAdapterFactory;
-import retrofit2.ScalarsConverterFactory;
+import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 /**
  * Created by dmitro on 11.11.17.
@@ -61,11 +63,15 @@ public class RetrofitFactory {
     }
 
     private static OkHttpClient buildOkHttpClient() {
-        CookieManager cookieManager = new CookieManager();
-        cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
+
+        ClearableCookieJar cookieJar =
+                new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(MusicApp.getInstance()));
+
 
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .addInterceptor(new IInterceptor())
+                .cookieJar(cookieJar)
+                .followRedirects(false).followRedirects(false)
                 .build();
 
         return okHttpClient;

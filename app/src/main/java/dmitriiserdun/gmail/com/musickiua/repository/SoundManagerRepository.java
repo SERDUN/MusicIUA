@@ -1,0 +1,32 @@
+package dmitriiserdun.gmail.com.musickiua.repository;
+
+import dmitriiserdun.gmail.com.musickiua.model.User;
+import io.reactivex.annotations.NonNull;
+import rx.Observable;
+
+/**
+ * Created by dmitro on 15.11.17.
+ */
+
+public class SoundManagerRepository implements SoundRepository {
+    private static SoundManagerRepository INSTANCE = null;
+
+    private final SoundRepository remoteSoundRepository;
+
+
+    private SoundManagerRepository(@NonNull SoundRepository remoteSoundRepository) {
+        this.remoteSoundRepository =remoteSoundRepository;
+    }
+
+    public static SoundManagerRepository getInstance(SoundRepository tasksRemoteDataSource) {
+        if (INSTANCE == null) {
+            INSTANCE = new SoundManagerRepository(tasksRemoteDataSource);
+        }
+        return INSTANCE;
+    }
+
+    @Override
+    public Observable<Integer> login(String login,String pass) {
+        return remoteSoundRepository.login(login,pass);
+    }
+}
