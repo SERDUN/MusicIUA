@@ -39,8 +39,18 @@ public class LoginPresenter implements LoginContract.WelcomePresenter {
     public LoginPresenter(BaseActivity baseActivity, LoginContract.WelcomeView view) {
         this.view = view;
         this.baseActivity = baseActivity;
-        soundManagerRepository = SoundManagerRepository.getInstance(RemoteSoundRepository.getInstance());
-        initListener();
+        trySignIn();
+    }
+
+    private void trySignIn() {
+        Integer userId = Hawk.get(Const.USER_ID);
+        if (userId!=null) {
+            this.baseActivity.startActivity(new Intent(baseActivity.getApplication(), PlayListActivity.class));
+        } else {
+            soundManagerRepository = SoundManagerRepository.getInstance(RemoteSoundRepository.getInstance());
+            initListener();
+        }
+
     }
 
     private void initListener() {

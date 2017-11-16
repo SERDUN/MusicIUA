@@ -5,6 +5,7 @@ import java.util.List;
 import dmitriiserdun.gmail.com.musickiua.model.Playlist;
 import dmitriiserdun.gmail.com.musickiua.model.Sound;
 import io.reactivex.annotations.NonNull;
+import okhttp3.ResponseBody;
 import rx.Observable;
 
 /**
@@ -18,7 +19,7 @@ public class SoundManagerRepository implements SoundRepository {
 
 
     private SoundManagerRepository(@NonNull SoundRepository remoteSoundRepository) {
-        this.remoteSoundRepository =remoteSoundRepository;
+        this.remoteSoundRepository = remoteSoundRepository;
     }
 
     public static SoundManagerRepository getInstance(SoundRepository tasksRemoteDataSource) {
@@ -29,8 +30,8 @@ public class SoundManagerRepository implements SoundRepository {
     }
 
     @Override
-    public Observable<Integer> login(String login,String pass) {
-        return remoteSoundRepository.login(login,pass);
+    public Observable<Integer> login(String login, String pass) {
+        return remoteSoundRepository.login(login, pass);
     }
 
     @Override
@@ -40,6 +41,11 @@ public class SoundManagerRepository implements SoundRepository {
 
     @Override
     public Observable<List<Sound>> getSounds(Integer userId, String playlistId) {
-        return remoteSoundRepository.getSounds(userId,playlistId);
+        return remoteSoundRepository.getSounds(userId, playlistId);
+    }
+
+    @Override
+    public Observable<ResponseBody> getSounds(String url) {
+        return remoteSoundRepository.getSounds(url);
     }
 }

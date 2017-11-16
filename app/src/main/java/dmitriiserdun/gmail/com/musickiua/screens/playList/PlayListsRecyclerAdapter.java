@@ -19,10 +19,10 @@ import rx.functions.Action1;
 
 public class PlayListsRecyclerAdapter extends RecyclerView.Adapter<PlayListsRecyclerAdapter.ChannelHolder> {
     private ArrayList<Playlist> playlists;
-    private Action0 onClick;
+    private Action1<String> onClick;
 
 
-    public void setOnClick(Action0 onClick) {
+    public void setOnClick(Action1<String> onClick) {
         this.onClick = onClick;
     }
 
@@ -71,8 +71,8 @@ public class PlayListsRecyclerAdapter extends RecyclerView.Adapter<PlayListsRecy
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(onClick!=null){
-                        onClick.call();
+                    if (onClick != null) {
+                        onClick.call(playlists.get(getAdapterPosition()).getId());
                     }
                 }
             });

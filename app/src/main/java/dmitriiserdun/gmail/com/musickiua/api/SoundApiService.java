@@ -11,6 +11,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Streaming;
 import retrofit2.http.Url;
 import rx.Observable;
 
@@ -46,4 +47,8 @@ public interface SoundApiService {
     @GET("get/{sound_id}/{key_for_sound}")
     public Call<ResponseBody> getFileForLoadSound(@Path("sound_id") String soundId,@Path("key_for_sound") String keyForSound);
 
+    @Headers("Content-Type:application/octet-stream")
+    @GET
+    @Streaming
+    public Observable<ResponseBody> getSound(@Url String url);
 }

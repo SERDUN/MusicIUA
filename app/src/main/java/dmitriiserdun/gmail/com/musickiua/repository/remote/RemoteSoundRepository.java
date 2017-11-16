@@ -1,7 +1,5 @@
 package dmitriiserdun.gmail.com.musickiua.repository.remote;
 
-import android.util.Log;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -124,6 +122,17 @@ public class RemoteSoundRepository implements SoundRepository {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
+    @Override
+    public Observable<ResponseBody> getSounds(String url) {
+        return RetrofitFactory.getService().getSound(url).flatMap(new Func1<ResponseBody, Observable<ResponseBody>>() {
+            @Override
+            public Observable<ResponseBody> call(ResponseBody responseBody) {
+                return Observable.just(responseBody);
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
+    }
+
+
     private String findSubscribeText(String html, String firstKey, String secondKey) {
         int startCopyIndex = html.indexOf(firstKey) + firstKey.length();
         int endCopyIndex = html.indexOf(secondKey, startCopyIndex);
@@ -135,10 +144,10 @@ public class RemoteSoundRepository implements SoundRepository {
     private List<Playlist> getPlatlistsWithHtml(String html) {
         ArrayList<Playlist> playsts = new ArrayList<>();
         Document doc = Jsoup.parse(html);
-        Elements metaElements = doc.select("table[id*=plTable]");
+        Elements metaElements = doc.select("div.search_result.clear");
         Elements metaElements1 = metaElements.select("tr");
         metaElements1.remove(0);
-        metaElements1.remove(metaElements1.size() - 1);
+        //    metaElements1.remove(metaElements1.size() - 1);
 
         for (Element element : metaElements1) {
             String sizeSound = element.select("td.align_right").get(0).text();
@@ -162,8 +171,8 @@ public class RemoteSoundRepository implements SoundRepository {
             String soundName = element.select("a").get(1).text();
             String author = element.select("a").get(2).text();
             String time = element.select("td").get(5).text();
-            String   urlSound=getTrueSoundUrl( element.select("a").first().attr("href"));
-            sounds.add(new Sound(soundName,author,time,urlSound));
+            String urlSound = getTrueSoundUrl(element.select("a").first().attr("href"));
+            sounds.add(new Sound(soundName, author, time, urlSound));
         }
 
 
