@@ -1,6 +1,5 @@
 package dmitriiserdun.gmail.com.musickiua.repository.remote;
 
-import android.net.Uri;
 import android.util.Log;
 
 import org.jsoup.Jsoup;
@@ -9,7 +8,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,13 +16,12 @@ import dmitriiserdun.gmail.com.musickiua.R;
 import dmitriiserdun.gmail.com.musickiua.api.RetrofitFactory;
 import dmitriiserdun.gmail.com.musickiua.base.MusicApp;
 import dmitriiserdun.gmail.com.musickiua.model.Playlist;
-import dmitriiserdun.gmail.com.musickiua.model.User;
+import dmitriiserdun.gmail.com.musickiua.model.Sound;
 import dmitriiserdun.gmail.com.musickiua.repository.SoundRepository;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -40,6 +37,10 @@ public class RemoteSoundRepository implements SoundRepository {
 
     private final String KEY_USER_ID_PREFIX = "<a href=\"http://narod.i.ua/user/";
     private final String KEY_USER_ID_POSTFIX = "/profile/";
+
+
+    private final String KEY_SCRIPT_PREFIX = ",pk:'";
+    private final String KEY_SCRIPT_POSTFIX = "'}],";
 
 
     private static RemoteSoundRepository INSTANCE;
@@ -90,11 +91,30 @@ public class RemoteSoundRepository implements SoundRepository {
 
     @Override
     public Observable<List<Playlist>> getPlaylists(Integer userId) {
-        return  RetrofitFactory.getService().getPlaylistHtml(userId).flatMap(new Func1<Response<ResponseBody>, Observable<List<Playlist>>>() {
+        return RetrofitFactory.getService().getPlaylistHtml(userId).flatMap(new Func1<Response<ResponseBody>, Observable<List<Playlist>>>() {
             @Override
             public Observable<List<Playlist>> call(Response<ResponseBody> responseBodyResponse) {
                 try {
                     return Observable.just(getPlatlistsWithHtml(responseBodyResponse.body().string()));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+
+    @Override
+    public Observable<List<Sound>> getSounds(Integer userId, String playlist_id) {
+
+        return RetrofitFactory.getService().getSoundsHtml(userId, playlist_id).flatMap(new Func1<Response<ResponseBody>, Observable<List<Sound>>>() {
+            @Override
+            public Observable<List<Sound>> call(Response<ResponseBody> responseBodyResponse) {
+
+                try {
+                    return Observable.just(getSoundsWithHtml(responseBodyResponse.body().string()));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -112,22 +132,79 @@ public class RemoteSoundRepository implements SoundRepository {
     }
 
 
-    private List<Playlist> getPlatlistsWithHtml(String html){
-        ArrayList<Playlist> playsts=new ArrayList<>();
-            Document doc = Jsoup.parse(html);
-            Elements metaElements = doc.select("table[id*=plTable]");
-            Elements metaElements1 = metaElements.select("tr");
-            metaElements1.remove(0);
-            metaElements1.remove(metaElements1.size() - 1);
+    private List<Playlist> getPlatlistsWithHtml(String html) {
+        ArrayList<Playlist> playsts = new ArrayList<>();
+        Document doc = Jsoup.parse(html);
+        Elements metaElements = doc.select("table[id*=plTable]");
+        Elements metaElements1 = metaElements.select("tr");
+        metaElements1.remove(0);
+        metaElements1.remove(metaElements1.size() - 1);
 
-            for (Element element : metaElements1) {
-                String sizeSound = element.select("td.align_right").get(0).text();
-                String namePlaylist = element.select("a").text();
-                String idPlayst = element.select("a").first().attr("href").replaceFirst(".*/([^/?]+).*", "$1");
-                playsts.add(new Playlist(namePlaylist,idPlayst,sizeSound));
-            }
+        for (Element element : metaElements1) {
+            String sizeSound = element.select("td.align_right").get(0).text();
+            String namePlaylist = element.select("a").text();
+            String idPlayst = element.select("a").first().attr("href").replaceFirst(".*/([^/?]+).*", "$1");
+            playsts.add(new Playlist(namePlaylist, idPlayst, sizeSound));
+        }
 
 
-        return  playsts;
+        return playsts;
+    }
+
+
+    private List<Sound> getSoundsWithHtml(String html) {
+        ArrayList<Sound> sounds = new ArrayList<>();
+        Document doc = Jsoup.parse(html);
+        Elements metaElements = doc.select("div[id*=plSongsContainer]");
+        Elements metaElements1 = metaElements.select("tr");
+        metaElements1.remove(0);
+        for (Element element : metaElements1) {
+            String soundName = element.select("a").get(1).text();
+            String author = element.select("a").get(2).text();
+            String time = element.select("td").get(5).text();
+            String   urlSound=getTrueSoundUrl( element.select("a").first().attr("href"));
+            sounds.add(new Sound(soundName,author,time,urlSound));
+        }
+
+
+        return sounds;
+    }
+
+
+    private String getTrueSoundUrl(String path) {
+
+        String pathSound = path.replaceFirst(".*/([^/?]+).*", "$1");
+
+        String url = "http://music.i.ua" + path;
+        String finishUrl = null;
+        try {
+            Response<ResponseBody> response = RetrofitFactory.getService().getSoundPlayerFileUrlHtml(url).execute();
+            Document doc = Jsoup.parse(response.body().string());
+            Element scriptElements = doc.getElementsByTag("script").get(14);
+            String key = getKeyForRequest(scriptElements.data());
+
+            finishUrl = getUrlForLoadAudio(pathSound, key);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return finishUrl;
+
+    }
+
+    private String getUrlForLoadAudio(String path, String key) {
+//        u=//mg1.i.ua/g/1f964db620495ce484796c1d04126f15/5a0d5118/music2/2/0/1247702
+        final int substringPosition = 4;//--u=//
+        try {
+            Response<ResponseBody> response = RetrofitFactory.getService().getFileForLoadSound(path, key).execute();
+            return response.body().string().substring(substringPosition);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private String getKeyForRequest(String script) {
+        return findSubscribeText(script, KEY_SCRIPT_PREFIX, KEY_SCRIPT_POSTFIX);
     }
 }
