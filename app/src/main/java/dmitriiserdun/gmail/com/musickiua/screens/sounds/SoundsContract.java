@@ -10,6 +10,7 @@ import dmitriiserdun.gmail.com.musickiua.base.BaseView;
 import dmitriiserdun.gmail.com.musickiua.model.Playlist;
 import dmitriiserdun.gmail.com.musickiua.model.Sound;
 import rx.functions.Action1;
+import rx.functions.Action2;
 
 /**
  * Created by dmitro on 31.10.17.
@@ -28,9 +29,17 @@ public class SoundsContract {
 
         public Context getContext();
 
-        public void onClickListener(Action1<String> action0);
+        public void onClickListener(Action2<Sound, Integer> action0);
 
-        public void setVideoPath(String s);
+        public void onSeekHandler(Runnable runnable);
+
+        public void setProgress(int position);
+        public void setMaxProgress(int position);
+
+
+        rx.Observable<Void> onClickPlay();
+
+        public void morphPlayPause();
 
 
     }
