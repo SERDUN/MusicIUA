@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 import com.jakewharton.rxbinding.view.RxView;
 
@@ -32,7 +33,7 @@ public class SoundsView implements SoundsContract.View {
 
     private Button button;
 
-
+    private VideoView videoView;
 
 
     public SoundsView(View root, BaseActivity activity) {
@@ -42,9 +43,10 @@ public class SoundsView implements SoundsContract.View {
     }
 
     private void initView() {
-        recyclerView=root.findViewById(R.id.recyclerViewSounds);
+        videoView = root.findViewById(R.id.videoView3);
+        recyclerView = root.findViewById(R.id.recyclerViewSounds);
         recyclerView.setLayoutManager(new LinearLayoutManager(activity.getBaseContext()));
-        soundsRecyclerAdapter =new SoundsRecyclerAdapter(new ArrayList<Sound>());
+        soundsRecyclerAdapter = new SoundsRecyclerAdapter(new ArrayList<Sound>());
         recyclerView.setAdapter(soundsRecyclerAdapter);
 
     }
@@ -77,7 +79,11 @@ public class SoundsView implements SoundsContract.View {
         soundsRecyclerAdapter.setOnClick(action0);
     }
 
-
+    @Override
+    public void setVideoPath(String s) {
+        videoView.setVideoPath(s);
+        videoView.start();
+    }
 
 
 }

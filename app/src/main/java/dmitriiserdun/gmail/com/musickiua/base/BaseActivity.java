@@ -58,7 +58,7 @@ public class BaseActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        MusicApp.getInstance().setCurrentActivity(this);
+        App.getInstance().setCurrentActivity(this);
     }
 
 
@@ -94,9 +94,9 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     private void clearReferences() {
-        BaseActivity currActivity = MusicApp.getInstance().getCurrentActivity();
+        BaseActivity currActivity = App.getInstance().getCurrentActivity();
         if (this.equals(currActivity))
-            MusicApp.getInstance().setCurrentActivity(null);
+            App.getInstance().setCurrentActivity(null);
     }
 
     private void navigateBack() {

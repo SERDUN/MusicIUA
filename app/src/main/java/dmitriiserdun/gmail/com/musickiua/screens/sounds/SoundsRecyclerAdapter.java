@@ -1,11 +1,5 @@
 package dmitriiserdun.gmail.com.musickiua.screens.sounds;
 
-import android.media.AudioManager;
-import android.media.MediaPlayer;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Environment;
-import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,13 +7,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import dmitriiserdun.gmail.com.musickiua.R;
-import dmitriiserdun.gmail.com.musickiua.base.MusicApp;
-import dmitriiserdun.gmail.com.musickiua.model.Playlist;
 import dmitriiserdun.gmail.com.musickiua.model.Sound;
 import rx.functions.Action1;
 
@@ -96,8 +86,8 @@ public class SoundsRecyclerAdapter extends RecyclerView.Adapter<SoundsRecyclerAd
 ////mg15.i.ua/g/4fdaf08fe3f1a9079505e5171cc17234/5a0d7817/music21/1/4/1125041
 ////                        String url = "storage/emulated/0/audio.mp3";
 ////                        String fileName = Uri.parse(url).getLastPathSegment();
-////                        File file = File.createTempFile(fileName, null, MusicApp.getInstance().getCacheDir());
-////                        MediaPlayer mPlayer = MediaPlayer.create(MusicApp.getInstance(), "");
+////                        File file = File.createTempFile(fileName, null, App.getInstance().getCacheDir());
+////                        MediaPlayer mPlayer = MediaPlayer.create(App.getInstance(), "");
 ////                        mPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 ////
 ////                        mPlayer.start();

@@ -6,7 +6,7 @@ import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 
 import dmitriiserdun.gmail.com.musickiua.R;
-import dmitriiserdun.gmail.com.musickiua.base.MusicApp;
+import dmitriiserdun.gmail.com.musickiua.base.App;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
@@ -35,7 +35,7 @@ public class RetrofitFactory {
 
 
     private static Retrofit getRetrofitBuilder() {
-        String url = MusicApp.getInstance().getApplicationContext().getString(R.string.base_url);
+        String url = App.getInstance().getApplicationContext().getString(R.string.base_url);
         Retrofit.Builder builder = new Retrofit.Builder()
                 .baseUrl(url)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -63,7 +63,7 @@ public class RetrofitFactory {
     private static OkHttpClient buildOkHttpClient() {
 
         ClearableCookieJar cookieJar =
-                new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(MusicApp.getInstance()));
+                new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(App.getInstance()));
 
 
         OkHttpClient okHttpClient = new OkHttpClient.Builder()

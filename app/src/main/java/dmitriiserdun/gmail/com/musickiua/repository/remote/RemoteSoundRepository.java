@@ -1,18 +1,24 @@
 package dmitriiserdun.gmail.com.musickiua.repository.remote;
 
+import android.util.Log;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import dmitriiserdun.gmail.com.musickiua.R;
 import dmitriiserdun.gmail.com.musickiua.api.RetrofitFactory;
-import dmitriiserdun.gmail.com.musickiua.base.MusicApp;
+import dmitriiserdun.gmail.com.musickiua.base.App;
 import dmitriiserdun.gmail.com.musickiua.model.Playlist;
 import dmitriiserdun.gmail.com.musickiua.model.Sound;
 import dmitriiserdun.gmail.com.musickiua.repository.SoundRepository;
@@ -22,6 +28,8 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by dmitro on 15.11.17.
@@ -61,7 +69,7 @@ public class RemoteSoundRepository implements SoundRepository {
         form.put("pass", pass);
         form.put("domn", "i.ua");
 
-        return RetrofitFactory.getService().getToken(MusicApp.getInstance().getApplicationContext().getString(R.string.login_url), form).flatMap(new Func1<Response<ResponseBody>, Observable<Response<ResponseBody>>>() {
+        return RetrofitFactory.getService().getToken(App.getInstance().getApplicationContext().getString(R.string.login_url), form).flatMap(new Func1<Response<ResponseBody>, Observable<Response<ResponseBody>>>() {
             @Override
             public Observable<Response<ResponseBody>> call(Response<ResponseBody> responseBodyResponse) {
                 String loginUrl = responseBodyResponse.headers().get("Location");
@@ -127,6 +135,7 @@ public class RemoteSoundRepository implements SoundRepository {
         return RetrofitFactory.getService().getSound(url).flatMap(new Func1<ResponseBody, Observable<ResponseBody>>() {
             @Override
             public Observable<ResponseBody> call(ResponseBody responseBody) {
+                saveToDisk(responseBody);
                 return Observable.just(responseBody);
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread());
@@ -215,5 +224,61 @@ public class RemoteSoundRepository implements SoundRepository {
 
     private String getKeyForRequest(String script) {
         return findSubscribeText(script, KEY_SCRIPT_PREFIX, KEY_SCRIPT_POSTFIX);
+    }
+
+
+
+
+
+
+    public void saveToDisk(ResponseBody body) {
+        try {
+            File file = new File("storage/emulated/0", "audio.mp3");
+
+            String path = file.getAbsolutePath();
+            InputStream is = null;
+            OutputStream os = null;
+
+            try {
+                Log.d(TAG, "File Size=" + body.contentLength());
+
+
+                is = body.byteStream();
+                os = new FileOutputStream(file);
+
+
+                byte data[] = new byte[1548576];
+                int count;
+
+                int progress = 0;
+                while ((count = is.read(data)) != -1) {
+
+                    os.write(data, 0, count);
+                    progress += count;
+
+                    Log.d(TAG, "Progress: " + progress + "/" + body.contentLength() + " >>>> " + (float) progress / body.contentLength());
+                    os.flush();
+
+
+                }
+
+
+                Log.d(TAG, "File saved successfully!");
+                return;
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.d(TAG, "Failed to save the file!");
+                return;
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
+            } finally {
+                if (is != null) is.close();
+                if (os != null) os.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            Log.d(TAG, "Failed to save the file!");
+            return;
+        }
     }
 }

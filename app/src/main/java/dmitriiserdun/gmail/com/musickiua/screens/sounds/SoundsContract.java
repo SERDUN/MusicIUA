@@ -30,7 +30,7 @@ public class SoundsContract {
 
         public void onClickListener(Action1<String> action0);
 
-
+        public void setVideoPath(String s);
 
 
     }
