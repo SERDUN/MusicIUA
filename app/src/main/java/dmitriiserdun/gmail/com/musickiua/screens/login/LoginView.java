@@ -2,19 +2,14 @@ package dmitriiserdun.gmail.com.musickiua.screens.login;
 
 import android.content.Context;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.jakewharton.rxbinding.view.RxView;
-import com.squareup.picasso.Picasso;
 
 import dmitriiserdun.gmail.com.musickiua.R;
 import dmitriiserdun.gmail.com.musickiua.base.BaseActivity;
-import io.reactivex.Observable;
 
 /**
  * Created by dmitro on 31.10.17.

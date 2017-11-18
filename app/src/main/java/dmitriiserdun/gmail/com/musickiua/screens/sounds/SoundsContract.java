@@ -7,9 +7,7 @@ import java.util.ArrayList;
 
 import dmitriiserdun.gmail.com.musickiua.base.BasePresenter;
 import dmitriiserdun.gmail.com.musickiua.base.BaseView;
-import dmitriiserdun.gmail.com.musickiua.model.Playlist;
 import dmitriiserdun.gmail.com.musickiua.model.Sound;
-import rx.functions.Action1;
 import rx.functions.Action2;
 
 /**

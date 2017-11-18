@@ -1,16 +1,11 @@
 package dmitriiserdun.gmail.com.musickiua.screens.sounds;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
 import dmitriiserdun.gmail.com.musickiua.R;
 import dmitriiserdun.gmail.com.musickiua.base.BaseActivity;
 import dmitriiserdun.gmail.com.musickiua.base.Const;
-import dmitriiserdun.gmail.com.musickiua.model.Sound;
-import dmitriiserdun.gmail.com.musickiua.screens.playList.PlayListContract;
-import dmitriiserdun.gmail.com.musickiua.screens.playList.PlayListPresenter;
-import dmitriiserdun.gmail.com.musickiua.screens.playList.PlayListView;
 
 public class SoundsActivity extends BaseActivity {
     private SoundsContract.View view;

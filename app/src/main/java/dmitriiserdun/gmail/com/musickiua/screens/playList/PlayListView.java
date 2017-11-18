@@ -4,18 +4,13 @@ import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
-
-import com.jakewharton.rxbinding.view.RxView;
 
 import java.util.ArrayList;
 
 import dmitriiserdun.gmail.com.musickiua.R;
 import dmitriiserdun.gmail.com.musickiua.base.BaseActivity;
 import dmitriiserdun.gmail.com.musickiua.model.Playlist;
-import rx.functions.Action0;
 import rx.functions.Action1;
 
 /**

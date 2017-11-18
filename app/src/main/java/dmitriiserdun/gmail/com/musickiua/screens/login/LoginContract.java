@@ -5,7 +5,6 @@ import android.content.Context;
 
 import dmitriiserdun.gmail.com.musickiua.base.BasePresenter;
 import dmitriiserdun.gmail.com.musickiua.base.BaseView;
-import io.reactivex.Observable;
 
 /**
  * Created by dmitro on 31.10.17.

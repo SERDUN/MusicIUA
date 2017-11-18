@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import dmitriiserdun.gmail.com.musickiua.base.BasePresenter;
 import dmitriiserdun.gmail.com.musickiua.base.BaseView;
 import dmitriiserdun.gmail.com.musickiua.model.Playlist;
-import rx.functions.Action0;
 import rx.functions.Action1;
 
 /**

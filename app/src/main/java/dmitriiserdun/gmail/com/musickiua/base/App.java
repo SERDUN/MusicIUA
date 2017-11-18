@@ -7,6 +7,10 @@ import android.support.multidex.MultiDex;
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.orhanobut.hawk.Hawk;
 
+import java.io.File;
+
+import dmitriiserdun.gmail.com.musickiua.base.player.MyFileGenerator;
+
 
 /**
  * Created by dmitro on 31.10.17.
@@ -32,8 +36,11 @@ public class App extends Application {
     }
 
     private HttpProxyCacheServer newProxy() {
-        return new HttpProxyCacheServer(this);
+        File file=new File("/storage/emulated/0","iua");
+        return new HttpProxyCacheServer.Builder(this)
+                .fileNameGenerator(new MyFileGenerator()).cacheDirectory(file).build();
     }
+
     public static App getInstance() {
         if (instance == null) {
             throw new RuntimeException("Application initialization error!");

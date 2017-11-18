@@ -3,29 +3,16 @@ package dmitriiserdun.gmail.com.musickiua.screens.login;
 import android.content.Intent;
 import android.util.Log;
 
-
 import com.orhanobut.hawk.Hawk;
 
 import java.io.IOException;
 
-import java.util.HashMap;
-
-
-import dmitriiserdun.gmail.com.musickiua.R;
 import dmitriiserdun.gmail.com.musickiua.base.BaseActivity;
-import dmitriiserdun.gmail.com.musickiua.api.RetrofitFactory;
 import dmitriiserdun.gmail.com.musickiua.base.Const;
-import dmitriiserdun.gmail.com.musickiua.model.User;
 import dmitriiserdun.gmail.com.musickiua.repository.SoundManagerRepository;
 import dmitriiserdun.gmail.com.musickiua.repository.remote.RemoteSoundRepository;
 import dmitriiserdun.gmail.com.musickiua.screens.playList.PlayListActivity;
-import okhttp3.ResponseBody;
-import retrofit2.Response;
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by dmitro on 31.10.17.

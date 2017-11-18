@@ -1,19 +1,16 @@
 package dmitriiserdun.gmail.com.musickiua.screens.sounds;
 
+import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.support.v7.widget.LinearLayoutCompat;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
 import dmitriiserdun.gmail.com.musickiua.R;
 import dmitriiserdun.gmail.com.musickiua.model.Sound;
-import rx.functions.Action1;
 import rx.functions.Action2;
 
 /**

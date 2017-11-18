@@ -1,16 +1,12 @@
 package dmitriiserdun.gmail.com.musickiua.screens.playList;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
 import dmitriiserdun.gmail.com.musickiua.R;
 import dmitriiserdun.gmail.com.musickiua.base.BaseActivity;
-import dmitriiserdun.gmail.com.musickiua.screens.login.LoginContract;
-import dmitriiserdun.gmail.com.musickiua.screens.login.LoginPresenter;
-import dmitriiserdun.gmail.com.musickiua.screens.login.LoginView;
 
-public class PlayListActivity extends BaseActivity {
+public class PlayListActivity extends BaseActivity  {
     private PlayListContract.View view;
     private PlayListContract.Presenter  presenter;
     @Override

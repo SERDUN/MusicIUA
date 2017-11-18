@@ -8,15 +8,12 @@ import com.orhanobut.hawk.Hawk;
 import java.util.ArrayList;
 import java.util.List;
 
-import dmitriiserdun.gmail.com.musickiua.R;
 import dmitriiserdun.gmail.com.musickiua.base.BaseActivity;
 import dmitriiserdun.gmail.com.musickiua.base.Const;
 import dmitriiserdun.gmail.com.musickiua.model.Playlist;
-import dmitriiserdun.gmail.com.musickiua.model.Sound;
 import dmitriiserdun.gmail.com.musickiua.repository.SoundManagerRepository;
 import dmitriiserdun.gmail.com.musickiua.repository.remote.RemoteSoundRepository;
 import dmitriiserdun.gmail.com.musickiua.screens.sounds.SoundsActivity;
-import rx.functions.Action0;
 import rx.functions.Action1;
 
 /**

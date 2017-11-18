@@ -43,7 +43,7 @@ dependencies {
     compile 'com.orhanobut:hawk:2.0.1'
     compile 'org.jsoup:jsoup:1.8.3'
     compile 'com.github.dmytrodanylyk:android-morphing-button:98a4986e56' // commit hash
-
+    compile 'com.google.android.exoplayer:exoplayer:r2.5.1'
     compile 'com.squareup.retrofit2:retrofit:2.3.0'
     compile 'com.squareup.retrofit2:adapter-rxjava:2.3.0'
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'

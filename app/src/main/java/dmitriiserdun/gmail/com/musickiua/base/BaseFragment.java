@@ -1,6 +1,5 @@
 package dmitriiserdun.gmail.com.musickiua.base;
 
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 

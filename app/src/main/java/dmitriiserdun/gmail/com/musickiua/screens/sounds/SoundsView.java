@@ -18,7 +18,6 @@ import dmitriiserdun.gmail.com.musickiua.R;
 import dmitriiserdun.gmail.com.musickiua.base.BaseActivity;
 import dmitriiserdun.gmail.com.musickiua.model.Sound;
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Action2;
 
 /**
