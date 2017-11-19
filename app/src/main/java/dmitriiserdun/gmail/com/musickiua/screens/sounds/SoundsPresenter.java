@@ -29,7 +29,7 @@ public class SoundsPresenter implements SoundsContract.Presenter {
     private Integer userId;
     private ArrayList<Sound> soundsList;
     private boolean playerRunning = false;
-    private boolean firstOpened=true;
+    private boolean firstOpened = true;
 
 
     private SoundPlayer soundPlayer;
@@ -52,11 +52,12 @@ public class SoundsPresenter implements SoundsContract.Presenter {
         view.onClickPlay().subscribe(new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
-                if(!playingSoundManager.isPlayingSound()&&firstOpened){
-                    firstOpened=false;
+                if (!playingSoundManager.isPlayingSound() && firstOpened) {
+                    firstOpened = false;
                     playingSoundManager.play(soundsList);
                     view.morphPause();
-                } if (playingSoundManager.isPlayingSound()) {
+                }
+                if (playingSoundManager.isPlayingSound()) {
                     playingSoundManager.pause();
                     view.morphPlay();
                 } else if (playingSoundManager.isPaused()) {
@@ -69,14 +70,18 @@ public class SoundsPresenter implements SoundsContract.Presenter {
         view.setOnItemListListener(new Action2<Sound, Integer>() {
             @Override
             public void call(Sound sound, Integer integer) {
+                view.setColorItem(sound.hashCode());
                 if (playingSoundManager.isPlayingSound() && playingSoundManager.getCurrentPosition() == integer) {
                     playingSoundManager.pause();
+                    view.setColorItem(sound.hashCode());
                     view.morphPlay();
                 } else if (playingSoundManager.isPaused() && playingSoundManager.getCurrentPosition() == integer) {
                     playingSoundManager.resume();
                     view.morphPause();
                 } else {
                     playingSoundManager.play(soundsList, integer);
+                    view.setColorItem(sound.hashCode());
+
                     view.morphPause();
                 }
 
@@ -86,6 +91,7 @@ public class SoundsPresenter implements SoundsContract.Presenter {
         view.onClickNext().subscribe(new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
+                view.setColorItem(soundsList.get(playingSoundManager.getCurrentPosition() + 1).hashCode());
                 playingSoundManager.nextSound();
             }
         });
@@ -93,6 +99,7 @@ public class SoundsPresenter implements SoundsContract.Presenter {
         view.onClickBack().subscribe(new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
+                view.setColorItem(soundsList.get(playingSoundManager.getCurrentPosition() - 1).hashCode());
                 playingSoundManager.backSound();
 
             }

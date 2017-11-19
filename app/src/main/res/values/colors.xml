@@ -7,6 +7,8 @@
     <color name="colorPlayPast">#43c1a9</color>
     <color name="colorPausePast">#c73f3d</color>
     <color name="colorPause">#e2543a</color>
+    <color name="selectedAudio">#b1cc8c</color>
+    <color name="white">#dde1d7</color>
 
     <color name="colorPlayControl">#c2cac9</color>
 </resources>

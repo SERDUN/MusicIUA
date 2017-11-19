@@ -40,6 +40,8 @@ public class SoundsContract {
         rx.Observable<Void> onClickBack();
         rx.Observable<Void> onClickNext();
 
+        public void setColorItem(int hasCode);
+
         public void morphPlay();
 
         public void morphPause();

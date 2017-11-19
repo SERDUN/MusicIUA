@@ -167,6 +167,11 @@ public class SoundsView implements SoundsContract.View {
     }
 
     @Override
+    public void setColorItem(int hasCode) {
+        soundsRecyclerAdapter.setSelectedItem(hasCode);
+    }
+
+    @Override
     public void morphPlay() {
         btnMorphStartPlay.morph(circlePlay);
 

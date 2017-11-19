@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
@@ -15,6 +17,7 @@ import com.squareup.otto.Bus;
 
 import dmitriiserdun.gmail.com.musickiua.R;
 import dmitriiserdun.gmail.com.musickiua.base.callbacks.MenuCreatedCallback;
+import rx.subjects.PublishSubject;
 
 /**
  * Created by dmitro on 31.10.17.
@@ -24,12 +27,11 @@ public class BaseActivity extends AppCompatActivity {
     protected final String TAG = getClass().getSimpleName();
     private Bus bus;
     private static final int TIME_INTERVAL = 1600;
-
     private boolean doubleBackToExitPressedOnce = false;
 
 
+
     //if menu !=1 then will be used native menu res/menu/name
-    private int idMenu = -1;
     private MenuCreatedCallback menuCreatedCallback;
 
     @Override
@@ -39,21 +41,7 @@ public class BaseActivity extends AppCompatActivity {
 
     }
 
-    public void initMenu(int menu, MenuCreatedCallback menuCreatedCallback) {
-        this.idMenu = menu;
-        this.menuCreatedCallback = menuCreatedCallback;
-    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        if (idMenu != -1) {
-            getMenuInflater().inflate(idMenu, menu);
-            menuCreatedCallback.init(menu);
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     @Override
     protected void onResume() {
@@ -134,6 +122,17 @@ public class BaseActivity extends AppCompatActivity {
         } else {
             finish();
         }
+    }
+
+    public void addFragment(Fragment fragment, String fragmentKey) {
+        if (getSupportFragmentManager().findFragmentByTag(fragmentKey) == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, fragment, fragmentKey)
+                    .commit();
+        }
+    }
+    public Toolbar getActivityToolbar() {
+        return (Toolbar) findViewById(R.id.toolbar);
     }
 
 }

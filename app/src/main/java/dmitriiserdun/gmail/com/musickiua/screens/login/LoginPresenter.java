@@ -11,7 +11,7 @@ import dmitriiserdun.gmail.com.musickiua.base.BaseActivity;
 import dmitriiserdun.gmail.com.musickiua.base.Const;
 import dmitriiserdun.gmail.com.musickiua.repository.SoundManagerRepository;
 import dmitriiserdun.gmail.com.musickiua.repository.remote.RemoteSoundRepository;
-import dmitriiserdun.gmail.com.musickiua.screens.playList.PlayListActivity;
+import dmitriiserdun.gmail.com.musickiua.screens.navigation.NavActivity;
 import rx.functions.Action1;
 
 /**
@@ -32,7 +32,7 @@ public class LoginPresenter implements LoginContract.WelcomePresenter {
     private void trySignIn() {
         Integer userId = Hawk.get(Const.USER_ID);
         if (userId!=null) {
-            this.baseActivity.startActivity(new Intent(baseActivity.getApplication(), PlayListActivity.class));
+            this.baseActivity.startActivity(new Intent(baseActivity.getApplication(), NavActivity.class));
         } else {
             soundManagerRepository = SoundManagerRepository.getInstance(RemoteSoundRepository.getInstance());
             initListener();
@@ -59,7 +59,7 @@ public class LoginPresenter implements LoginContract.WelcomePresenter {
             public void call(Integer userId) {
                 Hawk.put(Const.USER_ID, userId);
 
-                baseActivity.startActivity(new Intent(baseActivity.getApplication(), PlayListActivity.class));
+                baseActivity.startActivity(new Intent(baseActivity.getApplication(), NavActivity.class));
 
             }
 
