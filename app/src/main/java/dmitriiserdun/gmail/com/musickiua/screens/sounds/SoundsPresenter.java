@@ -29,6 +29,7 @@ public class SoundsPresenter implements SoundsContract.Presenter {
     private Integer userId;
     private ArrayList<Sound> soundsList;
     private boolean playerRunning = false;
+    private boolean firstOpened=true;
 
 
     private SoundPlayer soundPlayer;
@@ -37,6 +38,7 @@ public class SoundsPresenter implements SoundsContract.Presenter {
     public SoundsPresenter(BaseActivity baseActivity, final SoundsContract.View view, String stringExtra) {
         userId = Hawk.get(Const.USER_ID);
         playingSoundManager = PlayingSoundManager.getInstance();
+        initSoundManagerListener();
         this.view = view;
         this.baseActivity = baseActivity;
         soundManagerRepository = SoundManagerRepository.getInstance(RemoteSoundRepository.getInstance());
@@ -50,12 +52,17 @@ public class SoundsPresenter implements SoundsContract.Presenter {
         view.onClickPlay().subscribe(new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
-                if (!playingSoundManager.isPlayingSound()) {
+                if(!playingSoundManager.isPlayingSound()&&firstOpened){
+                    firstOpened=false;
+                    playingSoundManager.play(soundsList);
+                    view.morphPause();
+                } if (playingSoundManager.isPlayingSound()) {
+                    playingSoundManager.pause();
+                    view.morphPlay();
+                } else if (playingSoundManager.isPaused()) {
+                    playingSoundManager.resume();
                     view.morphPause();
                 }
-                initSoundManagerListener();
-                playingSoundManager.play(soundsList);
-
             }
         });
 
@@ -79,7 +86,7 @@ public class SoundsPresenter implements SoundsContract.Presenter {
         view.onClickNext().subscribe(new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
-                playingSoundManager.nuxtSound();
+                playingSoundManager.nextSound();
             }
         });
 
