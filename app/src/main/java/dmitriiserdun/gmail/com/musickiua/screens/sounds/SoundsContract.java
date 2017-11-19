@@ -27,17 +27,22 @@ public class SoundsContract {
 
         public Context getContext();
 
-        public void onClickListener(Action2<Sound, Integer> action0);
+        public void setOnItemListListener(Action2<Sound, Integer> action0);
 
         public void onSeekHandler(Runnable runnable);
 
         public void setProgress(int position);
+
         public void setMaxProgress(int position);
 
 
         rx.Observable<Void> onClickPlay();
+        rx.Observable<Void> onClickBack();
+        rx.Observable<Void> onClickNext();
 
-        public void morphPlayPause();
+        public void morphPlay();
+
+        public void morphPause();
 
 
     }

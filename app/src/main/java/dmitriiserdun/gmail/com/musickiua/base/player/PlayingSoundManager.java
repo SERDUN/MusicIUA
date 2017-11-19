@@ -71,7 +71,7 @@ public class PlayingSoundManager implements OnCompletionListener, MediaPlayer.On
 
     private void playNextSound() {
         currentPosition++;
-        if (currentPosition != sounds.size() - 1) {
+        if (currentPosition < sounds.size()) {
             soundPlayer.dispose();
             perform(sounds, currentPosition);
         }
@@ -112,4 +112,36 @@ public class PlayingSoundManager implements OnCompletionListener, MediaPlayer.On
     }
 
 
+    public boolean isPlayingSound() {
+        return soundPlayer.isPlaying();
+    }
+
+    public void pause() {
+        soundPlayer.pause();
+    }
+
+    public void resume() {
+        soundPlayer.play();
+    }
+
+    public int getCurrentPosition() {
+        return currentPosition;
+    }
+
+    public boolean isPaused() {
+        return soundPlayer.isPaused();
+    }
+
+    public void nuxtSound() {
+        currentPosition++;
+        preparePlayer();
+        perform(sounds, currentPosition);
+    }
+
+    public void backSound() {
+        currentPosition--;
+        preparePlayer();
+        perform(sounds, currentPosition);
+
+    }
 }
