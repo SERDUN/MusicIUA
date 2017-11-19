@@ -48,4 +48,26 @@ public class Sound {
     public void setTime(String time) {
         this.time = time;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Sound sound = (Sound) o;
+
+        if (name != null ? !name.equals(sound.name) : sound.name != null) return false;
+        if (author != null ? !author.equals(sound.author) : sound.author != null) return false;
+        if (time != null ? !time.equals(sound.time) : sound.time != null) return false;
+        return url != null ? url.equals(sound.url) : sound.url == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (author != null ? author.hashCode() : 0);
+        result = 31 * result + (time != null ? time.hashCode() : 0);
+        result = 31 * result + (url != null ? url.hashCode() : 0);
+        return result;
+    }
 }

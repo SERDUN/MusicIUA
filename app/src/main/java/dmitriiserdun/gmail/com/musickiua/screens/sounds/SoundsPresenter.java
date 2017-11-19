@@ -28,6 +28,9 @@ public class SoundsPresenter implements SoundsContract.Presenter {
     private String album_id;
     private Integer userId;
     private ArrayList<Sound> soundsList;
+    private boolean playerRunning = false;
+    private boolean firstOpened = true;
+
 
     private SoundPlayer soundPlayer;
     private PlayingSoundManager playingSoundManager;
@@ -35,67 +38,97 @@ public class SoundsPresenter implements SoundsContract.Presenter {
     public SoundsPresenter(BaseActivity baseActivity, final SoundsContract.View view, String stringExtra) {
         userId = Hawk.get(Const.USER_ID);
         playingSoundManager = PlayingSoundManager.getInstance();
+        initSoundManagerListener();
         this.view = view;
         this.baseActivity = baseActivity;
         soundManagerRepository = SoundManagerRepository.getInstance(RemoteSoundRepository.getInstance());
         album_id = stringExtra;
         loadSounds();
         initAction();
-
     }
+
 
     private void initAction() {
         view.onClickPlay().subscribe(new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
-                view.morphPlayPause();
-                // startPlayAllSound(1);
+                if (!playingSoundManager.isPlayingSound() && firstOpened) {
+                    firstOpened = false;
+                    playingSoundManager.play(soundsList);
+                    view.morphPause();
+                }
+                if (playingSoundManager.isPlayingSound()) {
+                    playingSoundManager.pause();
+                    view.morphPlay();
+                } else if (playingSoundManager.isPaused()) {
+                    playingSoundManager.resume();
+                    view.morphPause();
+                }
+            }
+        });
+
+        view.setOnItemListListener(new Action2<Sound, Integer>() {
+            @Override
+            public void call(Sound sound, Integer integer) {
+                view.setColorItem(sound.hashCode());
+                if (playingSoundManager.isPlayingSound() && playingSoundManager.getCurrentPosition() == integer) {
+                    playingSoundManager.pause();
+                    view.setColorItem(sound.hashCode());
+                    view.morphPlay();
+                } else if (playingSoundManager.isPaused() && playingSoundManager.getCurrentPosition() == integer) {
+                    playingSoundManager.resume();
+                    view.morphPause();
+                } else {
+                    playingSoundManager.play(soundsList, integer);
+                    view.setColorItem(sound.hashCode());
+
+                    view.morphPause();
+                }
+
+            }
+        });
+
+        view.onClickNext().subscribe(new Action1<Void>() {
+            @Override
+            public void call(Void aVoid) {
+                view.setColorItem(soundsList.get(playingSoundManager.getCurrentPosition() + 1).hashCode());
+                playingSoundManager.nextSound();
+            }
+        });
+
+        view.onClickBack().subscribe(new Action1<Void>() {
+            @Override
+            public void call(Void aVoid) {
+                view.setColorItem(soundsList.get(playingSoundManager.getCurrentPosition() - 1).hashCode());
+                playingSoundManager.backSound();
+
             }
         });
     }
 
-    private void startPlayAllSound(final int i) {
-        // soundManagerRepository.getSounds(userId, album_id).subscribe(new Action1<List<Sound>>() {
-//            @Override
-//            public void call(List<Sound> sounds) {
-//                //view.addPlayListsInList((ArrayList<Sound>) sounds);
-        // customMediaPlayer.playSounds(soundsList, i);
+    public void initSoundManagerListener() {
+        playingSoundManager.setMaxTimePosition(new Action1<Integer>() {
+            @Override
+            public void call(Integer maxPosition) {
+                view.setMaxProgress(maxPosition);
+            }
+        });
 
-        //    }
-        // });
-
+        playingSoundManager.setCurrentTimePosition(new Action1<Integer>() {
+            @Override
+            public void call(Integer integer) {
+                view.setProgress(integer);
+            }
+        });
     }
 
 
     private void loadSounds() {
-
         soundManagerRepository.getSounds(userId, album_id).subscribe(new Action1<List<Sound>>() {
             @Override
             public void call(List<Sound> sounds) {
                 soundsList = (ArrayList<Sound>) sounds;
                 view.addPlayListsInList((ArrayList<Sound>) sounds);
-            }
-        });
-
-
-        view.onClickListener(new Action2<Sound, Integer>() {
-            @Override
-            public void call(Sound sound, Integer integer) {
-                playingSoundManager.setMaxTimePosition(new Action1<Integer>() {
-                    @Override
-                    public void call(Integer maxPosition) {
-                        view.setMaxProgress(maxPosition);
-                    }
-                });
-
-                playingSoundManager.setCurrentTimePosition(new Action1<Integer>() {
-                    @Override
-                    public void call(Integer integer) {
-                        view.setProgress(integer);
-                    }
-                });
-                playingSoundManager.play(soundsList, integer);
-
             }
         });
 

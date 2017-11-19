@@ -16,7 +16,7 @@ import rx.functions.Action1;
 public class PlayingSoundManager implements OnCompletionListener, MediaPlayer.OnPreparedListener {
     private static final PlayingSoundManager ourInstance = new PlayingSoundManager();
     private SoundPlayer soundPlayer;
-    private int currentPosition;
+    private int currentPosition=0;
     private ArrayList<Sound> sounds;
     private Handler handler = new Handler();
     private TimePositionCursor timePositionCursor;
@@ -71,7 +71,7 @@ public class PlayingSoundManager implements OnCompletionListener, MediaPlayer.On
 
     private void playNextSound() {
         currentPosition++;
-        if (currentPosition != sounds.size() - 1) {
+        if (currentPosition < sounds.size()) {
             soundPlayer.dispose();
             perform(sounds, currentPosition);
         }
@@ -112,4 +112,36 @@ public class PlayingSoundManager implements OnCompletionListener, MediaPlayer.On
     }
 
 
+    public boolean isPlayingSound() {
+        return soundPlayer.isPlaying();
+    }
+
+    public void pause() {
+        soundPlayer.pause();
+    }
+
+    public void resume() {
+        soundPlayer.play();
+    }
+
+    public int getCurrentPosition() {
+        return currentPosition;
+    }
+
+    public boolean isPaused() {
+        return soundPlayer.isPaused();
+    }
+
+    public void nextSound() {
+        currentPosition++;
+        preparePlayer();
+        perform(sounds, currentPosition);
+    }
+
+    public void backSound() {
+        currentPosition--;
+        preparePlayer();
+        perform(sounds, currentPosition);
+
+    }
 }

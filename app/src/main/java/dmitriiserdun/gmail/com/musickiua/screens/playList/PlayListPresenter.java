@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import dmitriiserdun.gmail.com.musickiua.base.BaseActivity;
+import dmitriiserdun.gmail.com.musickiua.base.BaseFragment;
 import dmitriiserdun.gmail.com.musickiua.base.Const;
 import dmitriiserdun.gmail.com.musickiua.model.Playlist;
 import dmitriiserdun.gmail.com.musickiua.repository.SoundManagerRepository;
@@ -22,12 +23,12 @@ import rx.functions.Action1;
 
 public class PlayListPresenter implements PlayListContract.Presenter {
     private PlayListContract.View view;
-    private BaseActivity baseActivity;
+    private BaseFragment baseFragment;
     private SoundManagerRepository soundManagerRepository;
 
-    public PlayListPresenter(final BaseActivity baseActivity, final PlayListContract.View view) {
+    public PlayListPresenter(final BaseFragment baseFragment, final PlayListContract.View view) {
         this.view = view;
-        this.baseActivity = baseActivity;
+        this.baseFragment = baseFragment;
         soundManagerRepository = SoundManagerRepository.getInstance(RemoteSoundRepository.getInstance());
         final Integer userId = Hawk.get(Const.USER_ID);
         soundManagerRepository.getPlaylists(userId).subscribe(new Action1<List<Playlist>>() {
@@ -46,9 +47,9 @@ public class PlayListPresenter implements PlayListContract.Presenter {
         view.onClickListener(new Action1<String>() {
             @Override
             public void call(String s) {
-                Intent intent = new Intent(new Intent(baseActivity, SoundsActivity.class));
+                Intent intent = new Intent(new Intent(baseFragment.getContext(), SoundsActivity.class));
                 intent.putExtra(Const.CURRENT_ALBUM_ID, s);
-                baseActivity.startActivity(intent);
+                baseFragment.startActivity(intent);
             }
         });
     }

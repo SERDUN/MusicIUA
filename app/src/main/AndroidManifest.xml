@@ -6,7 +6,6 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-
     <application
         android:name=".base.App"
         android:allowBackup="true"
@@ -22,8 +21,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".screens.playList.PlayListActivity" />
-        <activity android:name=".screens.sounds.SoundsActivity"></activity>
+        <activity android:name=".screens.sounds.SoundsActivity" />
+        <activity
+            android:name=".screens.navigation.NavActivity"
+            android:label="@string/title_activity_navigation"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

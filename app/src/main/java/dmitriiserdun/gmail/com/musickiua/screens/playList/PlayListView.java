@@ -9,7 +9,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 import dmitriiserdun.gmail.com.musickiua.R;
-import dmitriiserdun.gmail.com.musickiua.base.BaseActivity;
+import dmitriiserdun.gmail.com.musickiua.base.BaseFragment;
 import dmitriiserdun.gmail.com.musickiua.model.Playlist;
 import rx.functions.Action1;
 
@@ -23,20 +23,20 @@ public class PlayListView implements PlayListContract.View {
     private PlayListsRecyclerAdapter playListsRecyclerAdapter;
 
     private View root;
-    private BaseActivity activity;
+    private BaseFragment baseFragment;
 
 
 
 
-    public PlayListView(View root, BaseActivity activity) {
+    public PlayListView(View root, BaseFragment baseFragment) {
         this.root = root;
-        this.activity = activity;
+        this.baseFragment = baseFragment;
         initView();
     }
 
     private void initView() {
         recyclerView=root.findViewById(R.id.recyclerViewPlayLists);
-        recyclerView.setLayoutManager(new LinearLayoutManager(activity.getBaseContext()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(baseFragment.getContext()));
         playListsRecyclerAdapter=new PlayListsRecyclerAdapter(new ArrayList<Playlist>());
         recyclerView.setAdapter(playListsRecyclerAdapter);
 
@@ -56,13 +56,13 @@ public class PlayListView implements PlayListContract.View {
 
     @Override
     public void showMessage(int id) {
-        Toast.makeText(activity, id, Toast.LENGTH_SHORT).show();
+        Toast.makeText(baseFragment.getContext(), id, Toast.LENGTH_SHORT).show();
     }
 
 
     @Override
     public Context getContext() {
-        return activity.getBaseContext();
+        return baseFragment.getContext();
     }
 
     @Override

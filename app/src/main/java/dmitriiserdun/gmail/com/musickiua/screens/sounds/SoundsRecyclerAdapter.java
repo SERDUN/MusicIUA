@@ -8,8 +8,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 
 import dmitriiserdun.gmail.com.musickiua.R;
+import dmitriiserdun.gmail.com.musickiua.base.App;
 import dmitriiserdun.gmail.com.musickiua.model.Sound;
 import rx.functions.Action2;
 
@@ -20,6 +23,7 @@ import rx.functions.Action2;
 public class SoundsRecyclerAdapter extends RecyclerView.Adapter<SoundsRecyclerAdapter.ChannelHolder> {
     private ArrayList<Sound> sounds;
     private Action2<Sound, Integer> onClick;
+    private int selectedItem;
 
 
     public void setOnClick(Action2<Sound, Integer> onClick) {
@@ -30,6 +34,10 @@ public class SoundsRecyclerAdapter extends RecyclerView.Adapter<SoundsRecyclerAd
         this.sounds = sounds;
     }
 
+    public void setSelectedItem(int selectedItem) {
+        this.selectedItem = selectedItem;
+        notifyDataSetChanged();
+    }
 
     public void updateData(ArrayList<Sound> sounds) {
         this.sounds = sounds;
@@ -77,6 +85,7 @@ public class SoundsRecyclerAdapter extends RecyclerView.Adapter<SoundsRecyclerAd
                 }
             });
         }
+
         private void initView() {
             name = itemView.findViewById(R.id.soundNameTextView);
             author = itemView.findViewById(R.id.authorTextView);
@@ -86,6 +95,11 @@ public class SoundsRecyclerAdapter extends RecyclerView.Adapter<SoundsRecyclerAd
         }
 
         public void bindView(Sound message) {
+            if (selectedItem == message.hashCode()) {
+                conteiner.setBackgroundColor(App.getInstance().getResources().getColor(R.color.selectedAudio));
+            } else {
+                conteiner.setBackgroundColor(App.getInstance().getResources().getColor(R.color.white));
+            }
             name.setText(message.getName());
             author.setText(message.getAuthor());
             time.setText(message.getTime());
@@ -95,6 +109,7 @@ public class SoundsRecyclerAdapter extends RecyclerView.Adapter<SoundsRecyclerAd
                 itemView.setPadding(0, 0, 0, 5);
 
             }
+
 
         }
 

@@ -14,6 +14,7 @@ import dmitriiserdun.gmail.com.musickiua.model.Sound;
 public class SoundPlayer {
     private MediaPlayer mediaPlayer;
     private boolean isPrepared = false;
+    private boolean isPaused = false;
 
 
     public SoundPlayer() {
@@ -62,6 +63,7 @@ public class SoundPlayer {
         try {
             synchronized (this) {
                 // if (!isPrepared) mediaPlayer.prepare();
+                isPaused = false;
                 mediaPlayer.start();
             }
         } catch (IllegalStateException e) {
@@ -98,8 +100,11 @@ public class SoundPlayer {
 
 
     public void pause() {
+        isPaused = true;
         mediaPlayer.pause();
     }
 
-
+    public boolean isPaused() {
+        return isPaused;
+    }
 }
