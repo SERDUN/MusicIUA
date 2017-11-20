@@ -2,8 +2,11 @@ package dmitriiserdun.gmail.com.musickiua.base;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 
 import com.squareup.otto.Bus;
+
+import dmitriiserdun.gmail.com.musickiua.R;
 
 /**
  * Created by dmitro on 31.10.17.
@@ -58,4 +61,6 @@ public class BaseFragment extends Fragment {
     public Bus getBus() {
         return bus;
     }
+
+
 }

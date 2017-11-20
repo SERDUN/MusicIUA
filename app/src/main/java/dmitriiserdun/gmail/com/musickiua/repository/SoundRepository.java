@@ -2,6 +2,7 @@ package dmitriiserdun.gmail.com.musickiua.repository;
 
 import java.util.List;
 
+import dmitriiserdun.gmail.com.musickiua.model.FoundSounds;
 import dmitriiserdun.gmail.com.musickiua.model.Playlist;
 import dmitriiserdun.gmail.com.musickiua.model.Sound;
 import io.reactivex.annotations.NonNull;
@@ -14,13 +15,14 @@ import rx.Observable;
 
 public interface SoundRepository {
     @NonNull
-    Observable<Integer> login(String login,String pass);
+    Observable<Integer> login(String login, String pass);
 
     @NonNull
     Observable<List<Playlist>> getPlaylists(Integer userId);
 
     Observable<List<Sound>> getSounds(Integer userId, String playlistId);
 
+    Observable<FoundSounds> searchSounds(String words, int page);
 
     Observable<ResponseBody> getSounds(String url);
 
