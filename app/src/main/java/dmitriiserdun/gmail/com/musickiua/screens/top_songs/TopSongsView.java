@@ -6,10 +6,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.support.v7.widget.Toolbar;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 
@@ -22,9 +24,11 @@ import java.util.concurrent.TimeUnit;
 import dmitriiserdun.gmail.com.musickiua.R;
 import dmitriiserdun.gmail.com.musickiua.base.BaseFragment;
 import dmitriiserdun.gmail.com.musickiua.model.Sound;
+import dmitriiserdun.gmail.com.musickiua.screens.player.PlayerFragment;
 import dmitriiserdun.gmail.com.musickiua.screens.sounds.SoundsRecyclerAdapter;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action2;
 import rx.schedulers.Schedulers;
 
 /**
@@ -41,12 +45,22 @@ public class TopSongsView implements TopSongsContract.View {
     private SearchView searchView;
     private ImageButton searchButton;
     private ProgressBar progressBar;
+    private PlayerFragment player;
+    private FrameLayout containerPlayer;
+
 
     public TopSongsView(View root, BaseFragment baseFragment) {
         this.root = root;
         this.baseFragment = baseFragment;
         initToolbar();
         initView();
+        initPlayer();
+    }
+
+    private void initPlayer() {
+        player = (PlayerFragment) baseFragment.getChildFragmentManager().findFragmentById(R.id.fragment_player);
+        Log.d("sds", "initPlayer: ");
+
     }
 
     private void initView() {
@@ -57,6 +71,7 @@ public class TopSongsView implements TopSongsContract.View {
         recyclerView.setAdapter(soundsRecyclerAdapter);
         searchButton = root.findViewById(R.id.searchButton);
         progressBar = root.findViewById(R.id.progressBar);
+        containerPlayer=root.findViewById(R.id.containerPlayer);
     }
 
     private void initToolbar() {
@@ -141,6 +156,20 @@ public class TopSongsView implements TopSongsContract.View {
         } else {
             recyclerView.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void showPlayer(boolean isShow) {
+        if (isShow) {
+            containerPlayer.setVisibility(View.VISIBLE);
+        } else {
+            containerPlayer.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void setOnItemListListener(Action2<Sound, Integer> action0) {
+        soundsRecyclerAdapter.setOnClick(action0);
     }
 
 

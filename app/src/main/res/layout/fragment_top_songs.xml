@@ -26,6 +26,21 @@
             android:id="@+id/recyclerViewSounds"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
+        <FrameLayout
+            android:visibility="gone"
+            android:id="@+id/containerPlayer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
+            <fragment
+                android:id="@+id/fragment_player"
+                class="dmitriiserdun.gmail.com.musickiua.screens.player.PlayerFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:layout="@layout/fragment_player" />
+        </FrameLayout>
+
     </RelativeLayout>
 
     <ProgressBar

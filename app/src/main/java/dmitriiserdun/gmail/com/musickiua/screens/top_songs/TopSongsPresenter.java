@@ -7,10 +7,12 @@ import java.net.URLEncoder;
 
 import dmitriiserdun.gmail.com.musickiua.base.BaseFragment;
 import dmitriiserdun.gmail.com.musickiua.model.FoundSounds;
+import dmitriiserdun.gmail.com.musickiua.model.Sound;
 import dmitriiserdun.gmail.com.musickiua.repository.SoundManagerRepository;
 import dmitriiserdun.gmail.com.musickiua.repository.remote.RemoteSoundRepository;
 import dmitriiserdun.gmail.com.musickiua.screens.playList.PlayListContract;
 import rx.functions.Action1;
+import rx.functions.Action2;
 
 import static android.content.ContentValues.TAG;
 
@@ -40,7 +42,12 @@ public class TopSongsPresenter implements TopSongsContract.Presenter {
 
     @Override
     public void initCallbacks() {
-
+        view.setOnItemListListener(new Action2<Sound, Integer>() {
+            @Override
+            public void call(Sound sound, Integer integer) {
+                view.showPlayer(true);
+            }
+        });
 
         view.getSearchText().subscribe(new Action1<CharSequence>() {
             @Override

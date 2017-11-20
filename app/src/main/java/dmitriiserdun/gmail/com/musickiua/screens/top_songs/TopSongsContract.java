@@ -11,6 +11,7 @@ import dmitriiserdun.gmail.com.musickiua.model.Sound;
 import dmitriiserdun.gmail.com.musickiua.screens.playList.PlayListContract;
 import rx.Observable;
 import rx.functions.Action1;
+import rx.functions.Action2;
 
 /**
  * Created by dmitro on 19.11.17.
@@ -45,6 +46,10 @@ public class TopSongsContract {
         public void showMainLoader(boolean isShow);
 
         public void showUI(boolean isShow);
+
+        public void showPlayer(boolean isShow);
+
+        public void setOnItemListListener(Action2<Sound, Integer> action0);
 
 
     }

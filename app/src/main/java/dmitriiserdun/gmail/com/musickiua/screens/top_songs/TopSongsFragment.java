@@ -13,11 +13,13 @@ import dmitriiserdun.gmail.com.musickiua.base.BaseFragment;
 import dmitriiserdun.gmail.com.musickiua.screens.playList.PlayListContract;
 import dmitriiserdun.gmail.com.musickiua.screens.playList.PlayListPresenter;
 import dmitriiserdun.gmail.com.musickiua.screens.playList.PlayListView;
+import dmitriiserdun.gmail.com.musickiua.screens.player.PlayerFragment;
 
 public class TopSongsFragment extends BaseFragment {
     public final static String KEY_FRAGMENT = TopSongsFragment.class.getName();
     private TopSongsContract.View view;
     private TopSongsContract.Presenter presenter;
+
 
 
     public TopSongsFragment() {
