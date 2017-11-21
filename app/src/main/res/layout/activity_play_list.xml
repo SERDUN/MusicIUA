@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="dmitriiserdun.gmail.com.musickiua.screens.playList.PlayListActivity">
+    xmlns:toola="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/textView2"
@@ -17,5 +17,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerViewPlayLists"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content" />
+
+
 </android.support.v7.widget.LinearLayoutCompat>

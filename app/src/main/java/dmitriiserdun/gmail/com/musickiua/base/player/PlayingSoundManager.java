@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import dmitriiserdun.gmail.com.musickiua.model.Sound;
 import rx.functions.Action1;
+import rx.functions.Action2;
 
 /**
  * Created by dmitro on 18.11.17.
@@ -16,17 +17,18 @@ import rx.functions.Action1;
 public class PlayingSoundManager implements OnCompletionListener, MediaPlayer.OnPreparedListener {
     private static final PlayingSoundManager ourInstance = new PlayingSoundManager();
     private SoundPlayer soundPlayer;
-    private int currentPosition=0;
+    private int currentPosition = 0;
     private ArrayList<Sound> sounds;
     private Handler handler = new Handler();
     private TimePositionCursor timePositionCursor;
     private Action1<Integer> currentTimePosition;
-    private Action1<Integer> maxTimePosition;
+    private Action2<Integer, String> dataSound;
 
 
     private PlayingSoundManager() {
         soundPlayer = new SoundPlayer();
         timePositionCursor = new TimePositionCursor();
+        sounds = new ArrayList<>();
     }
 
     public static PlayingSoundManager getInstance() {
@@ -38,6 +40,14 @@ public class PlayingSoundManager implements OnCompletionListener, MediaPlayer.On
         preparePlayer();
         soundPlayer.play(sound);
 
+    }
+
+    public void play() {
+        play(0);
+    }
+
+    public void play(int position) {
+        if (sounds != null) perform(sounds, position);
     }
 
     public void play(ArrayList<Sound> sounds) {
@@ -82,8 +92,8 @@ public class PlayingSoundManager implements OnCompletionListener, MediaPlayer.On
         this.currentTimePosition = currentTimePosition;
     }
 
-    public void setMaxTimePosition(Action1<Integer> maxTimePosition) {
-        this.maxTimePosition = maxTimePosition;
+    public void setDataSound(Action2<Integer, String> dataSound) {
+        this.dataSound = dataSound;
     }
 
 
@@ -94,7 +104,8 @@ public class PlayingSoundManager implements OnCompletionListener, MediaPlayer.On
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-        if ((maxTimePosition != null)) maxTimePosition.call(mp.getDuration());
+        if ((dataSound != null))
+            dataSound.call(mp.getDuration(), sounds.get(currentPosition).getName());
         soundPlayer.play();
 
     }
@@ -134,14 +145,36 @@ public class PlayingSoundManager implements OnCompletionListener, MediaPlayer.On
 
     public void nextSound() {
         currentPosition++;
-        preparePlayer();
-        perform(sounds, currentPosition);
+        if (currentPosition < sounds.size()) {
+            preparePlayer();
+            perform(sounds, currentPosition);
+        }
     }
 
     public void backSound() {
-        currentPosition--;
-        preparePlayer();
-        perform(sounds, currentPosition);
 
+        currentPosition--;
+        if (currentPosition >= 0) {
+            preparePlayer();
+            perform(sounds, currentPosition);
+        }
     }
+
+    public ArrayList<Sound> getSounds() {
+        return sounds;
+    }
+
+    public void setSounds(ArrayList<Sound> sounds) {
+        this.sounds = sounds;
+    }
+
+    public void putSounds(ArrayList<Sound> sounds) {
+        this.sounds.addAll(sounds);
+    }
+
+    public void clear() {
+        sounds.clear();
+    }
+
+
 }

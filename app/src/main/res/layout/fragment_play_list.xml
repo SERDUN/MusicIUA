@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="dmitriiserdun.gmail.com.musickiua.screens.playList.PlayListActivity">
+>
 
     <TextView
         android:id="@+id/textView2"
@@ -17,5 +17,9 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerViewPlayLists"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="wrap_content" />
+    <dmitriiserdun.gmail.com.musickiua.base.player.SPlayerView
+        android:layout_width="match_parent"
+        android:layout_height="220dp" />
+
 </android.support.v7.widget.LinearLayoutCompat>

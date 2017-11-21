@@ -85,6 +85,7 @@ public class TopSongsPresenter implements TopSongsContract.Presenter {
                     view.addSoundsList(foundSounds.getSounds());
                     view.showMainLoader(false);
                     view.showUI(true);
+                    view.updateSoundsInPlayer(foundSounds.getSounds());
                 }
             });
         } catch (UnsupportedEncodingException e) {

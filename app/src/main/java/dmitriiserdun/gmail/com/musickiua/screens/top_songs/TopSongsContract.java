@@ -31,7 +31,7 @@ public class TopSongsContract {
 
         public Context getContext();
 
-        public String getSearchingText();
+        public void updateSoundsInPlayer(ArrayList<Sound> sounds);
 
         public Observable<CharSequence> getSearchText();
 

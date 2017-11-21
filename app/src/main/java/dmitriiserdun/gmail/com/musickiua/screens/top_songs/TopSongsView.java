@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 import dmitriiserdun.gmail.com.musickiua.R;
 import dmitriiserdun.gmail.com.musickiua.base.BaseFragment;
+import dmitriiserdun.gmail.com.musickiua.base.player.SPlayerView;
 import dmitriiserdun.gmail.com.musickiua.model.Sound;
 import dmitriiserdun.gmail.com.musickiua.screens.player.PlayerFragment;
 import dmitriiserdun.gmail.com.musickiua.screens.sounds.SoundsRecyclerAdapter;
@@ -45,8 +46,9 @@ public class TopSongsView implements TopSongsContract.View {
     private SearchView searchView;
     private ImageButton searchButton;
     private ProgressBar progressBar;
-    private PlayerFragment player;
-    private FrameLayout containerPlayer;
+    private SPlayerView sPlayerView;
+    // private PlayerFragment player;
+    //private FrameLayout containerPlayer;
 
 
     public TopSongsView(View root, BaseFragment baseFragment) {
@@ -58,7 +60,8 @@ public class TopSongsView implements TopSongsContract.View {
     }
 
     private void initPlayer() {
-        player = (PlayerFragment) baseFragment.getChildFragmentManager().findFragmentById(R.id.fragment_player);
+        sPlayerView=root.findViewById(R.id.player);
+        //player = (PlayerFragment) baseFragment.getChildFragmentManager().findFragmentById(R.id.fragment_player);
         Log.d("sds", "initPlayer: ");
 
     }
@@ -71,7 +74,7 @@ public class TopSongsView implements TopSongsContract.View {
         recyclerView.setAdapter(soundsRecyclerAdapter);
         searchButton = root.findViewById(R.id.searchButton);
         progressBar = root.findViewById(R.id.progressBar);
-        containerPlayer=root.findViewById(R.id.containerPlayer);
+        //containerPlayer=root.findViewById(R.id.containerPlayer);
     }
 
     private void initToolbar() {
@@ -110,9 +113,10 @@ public class TopSongsView implements TopSongsContract.View {
     }
 
     @Override
-    public String getSearchingText() {
-        return searchView.getQuery().toString();
+    public void updateSoundsInPlayer(ArrayList<Sound> sounds) {
+        sPlayerView.putSounds(sounds);
     }
+
 
     @Override
     public Observable<CharSequence> getSearchText() {
@@ -161,9 +165,9 @@ public class TopSongsView implements TopSongsContract.View {
     @Override
     public void showPlayer(boolean isShow) {
         if (isShow) {
-            containerPlayer.setVisibility(View.VISIBLE);
+            //      containerPlayer.setVisibility(View.VISIBLE);
         } else {
-            containerPlayer.setVisibility(View.GONE);
+            //    containerPlayer.setVisibility(View.GONE);
         }
     }
 

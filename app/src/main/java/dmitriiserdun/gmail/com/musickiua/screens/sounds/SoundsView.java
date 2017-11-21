@@ -58,10 +58,10 @@ public class SoundsView implements SoundsContract.View {
         recyclerView.setLayoutManager(layoutManager);
         soundsRecyclerAdapter = new SoundsRecyclerAdapter(new ArrayList<Sound>());
         recyclerView.setAdapter(soundsRecyclerAdapter);
-
-        btnMorphStartPlay = root.findViewById(R.id.btnMorphStartPlay);
-        btnMorphStartBack = root.findViewById(R.id.backPlay);
-        btnMorphStartNext = root.findViewById(R.id.nextPlay);
+//
+//        btnMorphStartPlay = root.findViewById(R.id.btnMorphStartPlay);
+//        btnMorphStartBack = root.findViewById(R.id.backPlay);
+//        btnMorphStartNext = root.findViewById(R.id.nextPlay);
 
         seekBar = root.findViewById(R.id.seekBar);
 //        btnMorphStartPlay.setOnClickListener(new View.OnClickListener() {

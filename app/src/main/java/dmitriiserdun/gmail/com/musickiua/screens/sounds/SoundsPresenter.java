@@ -107,12 +107,12 @@ public class SoundsPresenter implements SoundsContract.Presenter {
     }
 
     public void initSoundManagerListener() {
-        playingSoundManager.setMaxTimePosition(new Action1<Integer>() {
-            @Override
-            public void call(Integer maxPosition) {
-                view.setMaxProgress(maxPosition);
-            }
-        });
+//        playingSoundManager.setDataSound(new Action1<Integer>() {
+//            @Override
+//            public void call(Integer maxPosition) {
+//                view.setMaxProgress(maxPosition);
+//            }
+//        });
 
         playingSoundManager.setCurrentTimePosition(new Action1<Integer>() {
             @Override
