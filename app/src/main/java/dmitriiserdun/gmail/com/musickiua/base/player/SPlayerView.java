@@ -3,7 +3,6 @@ package dmitriiserdun.gmail.com.musickiua.base.player;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -25,12 +24,12 @@ import rx.functions.Action2;
 public class SPlayerView extends LinearLayout {
     private View rootView;
     private TextView soundName;
-    private TextView currentPositio;
+    private TextView currentPosition;
     private Button playControllerButton;
-    private Button nextSountButtom;
-    private Button backSoundButtom;
+    private Button nextCountButton;
+    private Button backSoundButton;
     private SeekBar progressTime;
-    private PlayingSoundManager manager;
+    private SoundPlayer manager;
     private String currentMaxTime;
 
 
@@ -45,13 +44,13 @@ public class SPlayerView extends LinearLayout {
     }
 
     private void init(Context context) {
-        manager = PlayingSoundManager.getInstance();
+        manager = SoundPlayer.getInstance();
         rootView = inflate(context, R.layout.fragment_player, this);
         this.soundName = rootView.findViewById(R.id.currentSoundNameTV);
-        this.currentPositio = rootView.findViewById(R.id.currentPositionTv);
+        this.currentPosition = rootView.findViewById(R.id.currentPositionTv);
         this.playControllerButton = rootView.findViewById(R.id.playControllerButton);
-        this.nextSountButtom = rootView.findViewById(R.id.nextPlay);
-        this.backSoundButtom = rootView.findViewById(R.id.backPlay);
+        this.nextCountButton = rootView.findViewById(R.id.nextPlay);
+        this.backSoundButton = rootView.findViewById(R.id.backPlay);
         this.progressTime = rootView.findViewById(R.id.seekBar);
         initListener();
     }
@@ -70,14 +69,14 @@ public class SPlayerView extends LinearLayout {
             }
         });
 
-        nextSountButtom.setOnClickListener(new OnClickListener() {
+        nextCountButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 manager.nextSound();
             }
         });
 
-        backSoundButtom.setOnClickListener(new OnClickListener() {
+        backSoundButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 manager.backSound();
@@ -102,7 +101,7 @@ public class SPlayerView extends LinearLayout {
                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(integer)));
 
                 progressTime.setProgress(integer);
-                currentPositio.setText(mils + "/" + currentMaxTime);
+                currentPosition.setText(mils + "/" + currentMaxTime);
 
             }
         });
@@ -125,7 +124,7 @@ public class SPlayerView extends LinearLayout {
         manager.clear();
     }
 
-    public PlayingSoundManager getManager() {
+    public SoundPlayer getManager() {
         return manager;
     }
 }

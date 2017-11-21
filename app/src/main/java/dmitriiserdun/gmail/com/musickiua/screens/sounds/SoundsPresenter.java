@@ -9,7 +9,6 @@ import java.util.List;
 
 import dmitriiserdun.gmail.com.musickiua.base.BaseActivity;
 import dmitriiserdun.gmail.com.musickiua.base.Const;
-import dmitriiserdun.gmail.com.musickiua.base.player.PlayingSoundManager;
 import dmitriiserdun.gmail.com.musickiua.base.player.SoundPlayer;
 import dmitriiserdun.gmail.com.musickiua.model.Sound;
 import dmitriiserdun.gmail.com.musickiua.repository.SoundManagerRepository;
@@ -32,12 +31,12 @@ public class SoundsPresenter implements SoundsContract.Presenter {
     private boolean firstOpened = true;
 
 
+   // private SoundPlayer soundPlayer;
     private SoundPlayer soundPlayer;
-    private PlayingSoundManager playingSoundManager;
 
     public SoundsPresenter(BaseActivity baseActivity, final SoundsContract.View view, String stringExtra) {
         userId = Hawk.get(Const.USER_ID);
-        playingSoundManager = PlayingSoundManager.getInstance();
+        soundPlayer = SoundPlayer.getInstance();
         initSoundManagerListener();
         this.view = view;
         this.baseActivity = baseActivity;
@@ -52,16 +51,16 @@ public class SoundsPresenter implements SoundsContract.Presenter {
         view.onClickPlay().subscribe(new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
-                if (!playingSoundManager.isPlayingSound() && firstOpened) {
+                if (!soundPlayer.isPlayingSound() && firstOpened) {
                     firstOpened = false;
-                    playingSoundManager.play(soundsList);
+                    soundPlayer.play(soundsList);
                     view.morphPause();
                 }
-                if (playingSoundManager.isPlayingSound()) {
-                    playingSoundManager.pause();
+                if (soundPlayer.isPlayingSound()) {
+                    soundPlayer.pause();
                     view.morphPlay();
-                } else if (playingSoundManager.isPaused()) {
-                    playingSoundManager.resume();
+                } else if (soundPlayer.isPaused()) {
+                    soundPlayer.resume();
                     view.morphPause();
                 }
             }
@@ -71,15 +70,15 @@ public class SoundsPresenter implements SoundsContract.Presenter {
             @Override
             public void call(Sound sound, Integer integer) {
                 view.setColorItem(sound.hashCode());
-                if (playingSoundManager.isPlayingSound() && playingSoundManager.getCurrentPosition() == integer) {
-                    playingSoundManager.pause();
+                if (soundPlayer.isPlayingSound() && soundPlayer.getCurrentPosition() == integer) {
+                    soundPlayer.pause();
                     view.setColorItem(sound.hashCode());
                     view.morphPlay();
-                } else if (playingSoundManager.isPaused() && playingSoundManager.getCurrentPosition() == integer) {
-                    playingSoundManager.resume();
+                } else if (soundPlayer.isPaused() && soundPlayer.getCurrentPosition() == integer) {
+                    soundPlayer.resume();
                     view.morphPause();
                 } else {
-                    playingSoundManager.play(soundsList, integer);
+                    soundPlayer.play(soundsList, integer);
                     view.setColorItem(sound.hashCode());
 
                     view.morphPause();
@@ -91,30 +90,30 @@ public class SoundsPresenter implements SoundsContract.Presenter {
         view.onClickNext().subscribe(new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
-                view.setColorItem(soundsList.get(playingSoundManager.getCurrentPosition() + 1).hashCode());
-                playingSoundManager.nextSound();
+                view.setColorItem(soundsList.get(soundPlayer.getCurrentPosition() + 1).hashCode());
+                soundPlayer.nextSound();
             }
         });
 
         view.onClickBack().subscribe(new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
-                view.setColorItem(soundsList.get(playingSoundManager.getCurrentPosition() - 1).hashCode());
-                playingSoundManager.backSound();
+                view.setColorItem(soundsList.get(soundPlayer.getCurrentPosition() - 1).hashCode());
+                soundPlayer.backSound();
 
             }
         });
     }
 
     public void initSoundManagerListener() {
-//        playingSoundManager.setDataSound(new Action1<Integer>() {
+//        soundPlayer.setDataSound(new Action1<Integer>() {
 //            @Override
 //            public void call(Integer maxPosition) {
 //                view.setMaxProgress(maxPosition);
 //            }
 //        });
 
-        playingSoundManager.setCurrentTimePosition(new Action1<Integer>() {
+        soundPlayer.setCurrentTimePosition(new Action1<Integer>() {
             @Override
             public void call(Integer integer) {
                 view.setProgress(integer);

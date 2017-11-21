@@ -1,6 +1,7 @@
 package dmitriiserdun.gmail.com.musickiua.screens.top_songs;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,6 +28,7 @@ import dmitriiserdun.gmail.com.musickiua.base.player.SPlayerView;
 import dmitriiserdun.gmail.com.musickiua.model.Sound;
 import dmitriiserdun.gmail.com.musickiua.screens.player.PlayerFragment;
 import dmitriiserdun.gmail.com.musickiua.screens.sounds.SoundsRecyclerAdapter;
+import dmitriiserdun.gmail.com.musickiua.services.MediaPlayService;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action2;
@@ -60,7 +62,7 @@ public class TopSongsView implements TopSongsContract.View {
     }
 
     private void initPlayer() {
-        sPlayerView=root.findViewById(R.id.player);
+        sPlayerView = root.findViewById(R.id.player);
         //player = (PlayerFragment) baseFragment.getChildFragmentManager().findFragmentById(R.id.fragment_player);
         Log.d("sds", "initPlayer: ");
 
@@ -89,7 +91,6 @@ public class TopSongsView implements TopSongsContract.View {
 
         searchView = (SearchView) MenuItemCompat.getActionView(toolbar.getMenu().findItem(R.id.toolbar_menu_search));
 
-
     }
 
     @Override
@@ -109,12 +110,13 @@ public class TopSongsView implements TopSongsContract.View {
 
     @Override
     public Context getContext() {
-        return null;
+        return baseFragment.getContext();
     }
 
     @Override
     public void updateSoundsInPlayer(ArrayList<Sound> sounds) {
-        sPlayerView.putSounds(sounds);
+        //sPlayerView.putSounds(sounds);
+
     }
 
 

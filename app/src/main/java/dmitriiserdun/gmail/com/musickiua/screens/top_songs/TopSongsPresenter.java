@@ -6,11 +6,14 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import dmitriiserdun.gmail.com.musickiua.base.BaseFragment;
+import dmitriiserdun.gmail.com.musickiua.base.player.ManagerSoundPlayer;
 import dmitriiserdun.gmail.com.musickiua.model.FoundSounds;
 import dmitriiserdun.gmail.com.musickiua.model.Sound;
 import dmitriiserdun.gmail.com.musickiua.repository.SoundManagerRepository;
 import dmitriiserdun.gmail.com.musickiua.repository.remote.RemoteSoundRepository;
 import dmitriiserdun.gmail.com.musickiua.screens.playList.PlayListContract;
+import dmitriiserdun.gmail.com.musickiua.storage.provider.ContractClass;
+import dmitriiserdun.gmail.com.musickiua.storage.provider.ConvertHelper;
 import rx.functions.Action1;
 import rx.functions.Action2;
 
@@ -22,7 +25,7 @@ import static android.content.ContentValues.TAG;
 
 public class TopSongsPresenter implements TopSongsContract.Presenter {
     private SoundManagerRepository soundManagerRepository;
-
+    private ManagerSoundPlayer managerSoundPlayer;
     private TopSongsContract.View view;
     private BaseFragment baseFragment;
     private String searchingKey = "";
@@ -32,6 +35,7 @@ public class TopSongsPresenter implements TopSongsContract.Presenter {
         this.baseFragment = baseFragment;
         soundManagerRepository = SoundManagerRepository.getInstance(RemoteSoundRepository.getInstance());
         initCallbacks();
+        managerSoundPlayer = ManagerSoundPlayer.getInstance();
 
     }
 
@@ -76,7 +80,6 @@ public class TopSongsPresenter implements TopSongsContract.Presenter {
     }
 
     public void findSound() {
-        Log.d(TAG, "findSound: ");
         try {
 
             soundManagerRepository.searchSounds(URLEncoder.encode(searchingKey, "windows-1251"), 0).subscribe(new Action1<FoundSounds>() {
@@ -85,7 +88,10 @@ public class TopSongsPresenter implements TopSongsContract.Presenter {
                     view.addSoundsList(foundSounds.getSounds());
                     view.showMainLoader(false);
                     view.showUI(true);
-                    view.updateSoundsInPlayer(foundSounds.getSounds());
+                    //  view.updateSoundsInPlayer(foundSounds.getSounds());
+                    //view.updateSoundsInPlayer(foundSounds.getSounds());
+                    managerSoundPlayer.initSounds(view.getContext(), foundSounds.getSounds());
+                    managerSoundPlayer.selectAndPlaySound(view.getContext());
                 }
             });
         } catch (UnsupportedEncodingException e) {
