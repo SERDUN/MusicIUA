@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
@@ -17,7 +16,6 @@ import com.squareup.otto.Bus;
 
 import dmitriiserdun.gmail.com.musickiua.R;
 import dmitriiserdun.gmail.com.musickiua.base.callbacks.MenuCreatedCallback;
-import rx.subjects.PublishSubject;
 
 /**
  * Created by dmitro on 31.10.17.

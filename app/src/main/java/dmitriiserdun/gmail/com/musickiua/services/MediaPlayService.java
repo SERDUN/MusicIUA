@@ -34,9 +34,6 @@ public class MediaPlayService extends Service {
     public static class PlayController {
         public static String KEY = "play_controller";
         public static int PLAY = 1;
-        public static int PAUSE = 2;
-        public static int RESUME = 3;
-        public static int STOP = 4;
         public static int NEXT = 5;
         public static int BACK = 6;
     }
@@ -45,7 +42,9 @@ public class MediaPlayService extends Service {
         public static String KEY = "data_source_controller";
         public static String POSITION = "position";
         public static int LOAD = 1;
+        public static int CLEAR_LIST_IN_DATABASE = 2;
         public static String IS_LIST = "is_list";
+//        public static String CLEAR_LIST_IN_DATABASE = "clear_tmp_list";
 
 
     }
@@ -106,7 +105,7 @@ public class MediaPlayService extends Service {
                 soundPlayer.setSounds(getSound());
                 break;
             case 2:
-
+                clear();
                 break;
         }
 
@@ -134,6 +133,16 @@ public class MediaPlayService extends Service {
 
 
         return START_STICKY;
+    }
+
+    private void clear() {
+        Log.d(TAG, "onStartCommand: CLEAR");
+
+        getBaseContext().getContentResolver().delete(
+                ContractClass.Sounds.CONTENT_URI,
+                null,
+                null);
+       // soundPlayer.clear();
     }
 
     private void handleClickPlay(Intent intent) {

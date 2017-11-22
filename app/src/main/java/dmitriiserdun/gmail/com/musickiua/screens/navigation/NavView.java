@@ -1,9 +1,7 @@
 package dmitriiserdun.gmail.com.musickiua.screens.navigation;
 
 import android.content.Context;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -16,7 +14,6 @@ import dmitriiserdun.gmail.com.musickiua.R;
 import dmitriiserdun.gmail.com.musickiua.base.BaseActivity;
 import dmitriiserdun.gmail.com.musickiua.screens.playList.PlayListFragment;
 import dmitriiserdun.gmail.com.musickiua.screens.top_songs.TopSongsFragment;
-import rx.functions.Action1;
 
 /**
  * Created by dmitro on 19.11.17.

@@ -29,6 +29,7 @@ public class PlayListView implements PlayListContract.View {
     private Toolbar toolbar;
 
 
+
     public PlayListView(View root, BaseFragment baseFragment) {
         this.root = root;
         this.baseFragment = baseFragment;
@@ -44,7 +45,7 @@ public class PlayListView implements PlayListContract.View {
         if (currentMenu != null) {
             currentMenu.clear();
         }
-       // toolbar.inflateMenu(R.menu.navigation);
+        // toolbar.inflateMenu(R.menu.navigation);
 
     }
 
@@ -83,6 +84,7 @@ public class PlayListView implements PlayListContract.View {
     public void onClickListener(Action1<String> action0) {
         playListsRecyclerAdapter.setOnClick(action0);
     }
+
 
 
 }

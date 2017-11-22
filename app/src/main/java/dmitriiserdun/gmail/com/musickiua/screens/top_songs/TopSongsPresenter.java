@@ -82,8 +82,8 @@ public class TopSongsPresenter implements TopSongsContract.Presenter {
     }
 
     public void findSound() {
+        managerSoundPlayer.deleteTemporarySound();
         try {
-
             soundManagerRepository.searchSounds(URLEncoder.encode(searchingKey, "windows-1251"), 0).subscribe(new Action1<FoundSounds>() {
                 @Override
                 public void call(FoundSounds foundSounds) {

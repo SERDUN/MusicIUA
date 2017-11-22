@@ -1,10 +1,6 @@
 package dmitriiserdun.gmail.com.musickiua.screens.navigation;
 
 import android.os.Bundle;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 
 import dmitriiserdun.gmail.com.musickiua.R;

@@ -7,12 +7,8 @@ import java.util.ArrayList;
 import dmitriiserdun.gmail.com.musickiua.base.BasePresenter;
 import dmitriiserdun.gmail.com.musickiua.base.BaseView;
 import dmitriiserdun.gmail.com.musickiua.base.player.ControlPlayer;
-import dmitriiserdun.gmail.com.musickiua.base.player.ManagerSoundPlayer;
-import dmitriiserdun.gmail.com.musickiua.model.Playlist;
 import dmitriiserdun.gmail.com.musickiua.model.Sound;
-import dmitriiserdun.gmail.com.musickiua.screens.playList.PlayListContract;
 import rx.Observable;
-import rx.functions.Action1;
 import rx.functions.Action2;
 
 /**

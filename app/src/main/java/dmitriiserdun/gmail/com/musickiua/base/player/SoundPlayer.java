@@ -10,8 +10,6 @@ import java.util.ArrayList;
 
 import dmitriiserdun.gmail.com.musickiua.base.App;
 import dmitriiserdun.gmail.com.musickiua.model.Sound;
-import rx.functions.Action1;
-import rx.functions.Action2;
 import rx.subjects.PublishSubject;
 
 import static android.content.ContentValues.TAG;

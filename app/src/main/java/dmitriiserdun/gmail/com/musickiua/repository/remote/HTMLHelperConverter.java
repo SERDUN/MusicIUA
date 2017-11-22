@@ -1,7 +1,5 @@
 package dmitriiserdun.gmail.com.musickiua.repository.remote;
 
-import android.util.Log;
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -15,8 +13,6 @@ import dmitriiserdun.gmail.com.musickiua.model.FoundSounds;
 import dmitriiserdun.gmail.com.musickiua.model.Sound;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * Created by dmitro on 20.11.17.

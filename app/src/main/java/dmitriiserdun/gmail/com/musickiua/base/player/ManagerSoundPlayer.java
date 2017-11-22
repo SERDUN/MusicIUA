@@ -10,7 +10,6 @@ import dmitriiserdun.gmail.com.musickiua.model.Sound;
 import dmitriiserdun.gmail.com.musickiua.services.MediaPlayService;
 import dmitriiserdun.gmail.com.musickiua.storage.provider.ContractClass;
 import dmitriiserdun.gmail.com.musickiua.storage.provider.ConvertHelper;
-import rx.functions.Action1;
 
 /**
  * Created by dmitro on 21.11.17.
@@ -103,6 +102,14 @@ public class ManagerSoundPlayer implements ControlPlayer {
 
     @Override
     public void isRepeat(boolean repeat) {
+
+    }
+
+    public void deleteTemporarySound() {
+
+        Intent intent = new Intent(App.getInstance(), MediaPlayService.class);
+        intent.putExtra(MediaPlayService.DataSourceController.KEY, MediaPlayService.DataSourceController.CLEAR_LIST_IN_DATABASE);
+        App.getInstance().startService(intent);
 
     }
 
