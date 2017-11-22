@@ -173,8 +173,8 @@ public class SoundPlayer implements OnCompletionListener, MediaPlayer.OnPrepared
 
         public MediaPlayer play(Sound sound) {
             mediaPlayer = new MediaPlayer();
-            String url = "http://" + sound.getUrl() + "?name=" + sound.getName();
-            HttpProxyCacheServer proxy = App.getProxy(App.getInstance());
+            String url = "http://" + sound.getUrl();
+            HttpProxyCacheServer proxy = App.getProxy(App.getInstance(),sound.getName());
             String proxyUrl = proxy.getProxyUrl(url);
 
             try {

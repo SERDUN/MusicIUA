@@ -38,6 +38,7 @@ public class SoundsPresenter implements SoundsContract.Presenter {
         album_id = stringExtra;
         managerSoundPlayer = ManagerSoundPlayer.getInstance();
         initPlayer();
+
         loadSounds();
         initAction();
     }
@@ -45,6 +46,7 @@ public class SoundsPresenter implements SoundsContract.Presenter {
     private void initPlayer() {
         managerSoundPlayer = ManagerSoundPlayer.getInstance();
         view.initControllerWithPlayer(managerSoundPlayer.getController());
+        managerSoundPlayer.updateViewPlayer();
      //   view.initControllerWithPlayer(managerSoundPlayer.getController());
 
     }

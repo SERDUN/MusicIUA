@@ -30,13 +30,14 @@ public class TopSongsPresenter implements TopSongsContract.Presenter {
         soundManagerRepository = SoundManagerRepository.getInstance(RemoteSoundRepository.getInstance());
         initCallbacks();
         initPlayer();
-
-
     }
+
+
 
     private void initPlayer() {
         managerSoundPlayer = ManagerSoundPlayer.getInstance();
         view.initControllerWithPlayer(managerSoundPlayer.getController());
+        managerSoundPlayer.updateViewPlayer();
     }
 
     @Override

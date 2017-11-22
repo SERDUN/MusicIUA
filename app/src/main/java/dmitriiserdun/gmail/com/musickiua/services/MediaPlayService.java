@@ -25,10 +25,12 @@ import rx.functions.Action1;
 import static android.content.ContentValues.TAG;
 
 public class MediaPlayService extends Service {
+
     private SoundPlayer soundPlayer;
     private TimePositionCursor timePositionCursor;
     private Handler handler = new Handler();
     private boolean statePlay = false;
+    private Sound currentSound;
 
 
     public static class PlayController {
@@ -44,6 +46,7 @@ public class MediaPlayService extends Service {
         public static int LOAD = 1;
         public static int CLEAR_LIST_IN_DATABASE = 2;
         public static String IS_LIST = "is_list";
+        public static int UPDATE_VIEW_PLAYER = 3;
 //        public static String CLEAR_LIST_IN_DATABASE = "clear_tmp_list";
 
 
@@ -54,7 +57,6 @@ public class MediaPlayService extends Service {
     public void onCreate() {
         Log.i("Test", "Service: onCreate");
         timePositionCursor = new TimePositionCursor();
-
 
         Notification.Builder builder = new Notification.Builder(this)
 //                .addAction(R.drawable.ic_pause_black_24dp, "Call", resultPendingIntent)
@@ -107,6 +109,9 @@ public class MediaPlayService extends Service {
             case 2:
                 clear();
                 break;
+            case 3:
+                updateViewPlayer(currentSound);
+                break;
         }
 
         switch (keyPlaying) {
@@ -142,7 +147,7 @@ public class MediaPlayService extends Service {
                 ContractClass.Sounds.CONTENT_URI,
                 null,
                 null);
-       // soundPlayer.clear();
+        // soundPlayer.clear();
     }
 
     private void handleClickPlay(Intent intent) {
@@ -188,15 +193,22 @@ public class MediaPlayService extends Service {
         soundPlayer.soundPublishSubject.subscribe(new Action1<Sound>() {
             @Override
             public void call(Sound sound) {
-                Log.d(TAG, "onStartCommand: SUBSCRIBE------------------: " + sound.getName());
-                Intent intent = new Intent(Const.BROADCAST_ACTION);
-                intent.putExtra("status", "sound_data");
-                intent.putExtra("sound", sound);
-                getBaseContext().sendBroadcast(intent);
+                MediaPlayService.this.currentSound = sound;
+                updateViewPlayer(sound);
 
             }
         });
 
+    }
+
+    private void updateViewPlayer(Sound sound) {
+        if (currentSound != null) {
+            Log.d(TAG, "onStartCommand: SUBSCRIBE------------------: " + sound.getName());
+            Intent intent = new Intent(Const.BROADCAST_ACTION);
+            intent.putExtra("status", "sound_data");
+            intent.putExtra("sound", sound);
+            getBaseContext().sendBroadcast(intent);
+        }
     }
 
     private ArrayList<Sound> getSound() {
@@ -237,5 +249,11 @@ public class MediaPlayService extends Service {
     @Override
     public void onTaskRemoved(Intent rootIntent) {
         Log.d("dsdsdsds", "sraka servicu: ");
+    }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
     }
 }

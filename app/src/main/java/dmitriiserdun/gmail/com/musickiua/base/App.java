@@ -20,6 +20,7 @@ public class App extends Application {
     private static App instance;
     private BaseActivity currentActivity;
     private HttpProxyCacheServer proxy;
+    private static String tmpName = "";
 
     @Override
     public void onCreate() {
@@ -30,8 +31,9 @@ public class App extends Application {
         instance = this;
     }
 
-    public static HttpProxyCacheServer getProxy(Context context) {
+    public static HttpProxyCacheServer getProxy(Context context, String name) {
         App app = (App) context.getApplicationContext();
+        tmpName = name;
         return app.proxy == null ? (app.proxy = app.newProxy()) : app.proxy;
     }
 
@@ -41,9 +43,9 @@ public class App extends Application {
                 .fileNameGenerator(new FileNameGenerator() {
                     @Override
                     public String generate(String url) {
-                        Uri uri = Uri.parse(url);
-                        String videoId = uri.getQueryParameter("name");
-                        return videoId + ".mp3";
+                        //   Uri uri = Uri.parse(url);
+                        // String videoId = uri.getQueryParameter("name");
+                        return App.tmpName + ".mp3";
                     }
                 }).cacheDirectory(file).build();
     }
