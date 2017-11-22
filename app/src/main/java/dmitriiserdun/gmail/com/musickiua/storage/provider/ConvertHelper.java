@@ -35,7 +35,7 @@ public class ConvertHelper {
         if (cursor.getCount() != 0) {
             if (cursor.moveToFirst()) {
                 do {
-                    String soundName = cursor.getString(cursor.getColumnIndex(ContractClass.Sounds.COLUMN_NAME_TIME));
+                    String soundName = cursor.getString(cursor.getColumnIndex(ContractClass.Sounds.COLUMN_NAME_TITLE));
                     String author = cursor.getString(cursor.getColumnIndex(ContractClass.Sounds.COLUMN_NAME_AUTHOR));
                     String time = cursor.getString(cursor.getColumnIndex(ContractClass.Sounds.COLUMN_NAME_TIME));
                     String url = cursor.getString(cursor.getColumnIndex(ContractClass.Sounds.COLUMN_NAME_URL));

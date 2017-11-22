@@ -1,6 +1,9 @@
 package dmitriiserdun.gmail.com.musickiua.base.player;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
@@ -9,13 +12,12 @@ import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import dmitriiserdun.gmail.com.musickiua.R;
 import dmitriiserdun.gmail.com.musickiua.model.Sound;
-import rx.functions.Action1;
-import rx.functions.Action2;
+
+import static dmitriiserdun.gmail.com.musickiua.base.Const.BROADCAST_ACTION;
 
 /**
  * Created by dmitro on 21.11.17.
@@ -29,8 +31,13 @@ public class SPlayerView extends LinearLayout {
     private Button nextCountButton;
     private Button backSoundButton;
     private SeekBar progressTime;
-    private SoundPlayer manager;
-    private String currentMaxTime;
+    private String maxSeekPosition;
+
+    private ControlPlayer controlPlayer;
+
+    public void initController(ControlPlayer controlPlayer) {
+        this.controlPlayer = controlPlayer;
+    }
 
 
     public SPlayerView(Context context) {
@@ -44,7 +51,6 @@ public class SPlayerView extends LinearLayout {
     }
 
     private void init(Context context) {
-        manager = SoundPlayer.getInstance();
         rootView = inflate(context, R.layout.fragment_player, this);
         this.soundName = rootView.findViewById(R.id.currentSoundNameTV);
         this.currentPosition = rootView.findViewById(R.id.currentPositionTv);
@@ -59,72 +65,57 @@ public class SPlayerView extends LinearLayout {
         playControllerButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (manager.isPlayingSound()) {
-                    manager.pause();
-                } else if (!manager.isPlayingSound() && manager.isPaused()) {
-                    manager.resume();
-                } else if (!manager.isPlayingSound() && !manager.isPaused()) {
-                    manager.play();
-                }
+                controlPlayer.startOrPause();
             }
         });
 
         nextCountButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                manager.nextSound();
+                controlPlayer.next();
             }
         });
 
         backSoundButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                manager.backSound();
+                // manager.backSound();
+                controlPlayer.back();
             }
         });
 
-        manager.setDataSound(new Action2<Integer, String>() {
+        BroadcastReceiver br = new BroadcastReceiver() {
             @Override
-            public void call(Integer integer, String name) {
-                soundName.setText(name);
-                progressTime.setMax(integer);
-
-                currentMaxTime = String.format("%d, %d", TimeUnit.MILLISECONDS.toMinutes(integer), TimeUnit.MILLISECONDS.toSeconds(integer) -
-                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(integer)));
+            public void onReceive(Context context, Intent intent) {
+                String status = intent.getStringExtra("status");
+                if (status.equals("sound_data")) {
+                    handleViewData((Sound) intent.getSerializableExtra("sound"));
+                } else if (status.equals("seek_data")) {
+                    handleSeekBar(intent.getIntExtra("currentSeekTime", 0));
+                }
             }
-        });
+        };
 
-        manager.setCurrentTimePosition(new Action1<Integer>() {
-            @Override
-            public void call(Integer integer) {
-                String mils = String.format("%d, %d", TimeUnit.MILLISECONDS.toMinutes(integer), TimeUnit.MILLISECONDS.toSeconds(integer) -
-                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(integer)));
-
-                progressTime.setProgress(integer);
-                currentPosition.setText(mils + "/" + currentMaxTime);
-
-            }
-        });
-    }
-
-    public void compelSoundInPosition(int position) {
-        manager.play(position);
+        IntentFilter intFilt = new IntentFilter(BROADCAST_ACTION);
+        getContext().registerReceiver(br, intFilt);
 
     }
 
-    public void setSounds(ArrayList<Sound> sounds) {
-        manager.setSounds(sounds);
+    private void handleViewData(Sound sound) {
+        maxSeekPosition = sound.getTime();
+        soundName.setText(sound.getName());
+        progressTime.setMax(sound.getTimeMilis());
     }
 
-    public void putSounds(ArrayList<Sound> sounds) {
-        manager.putSounds(sounds);
+    private void handleSeekBar(int position) {
+        progressTime.setProgress(position);
+        String mils = String.format("%d:%d", TimeUnit.MILLISECONDS.toMinutes(position), TimeUnit.MILLISECONDS.toSeconds(position) -
+                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(position)));
+
+        currentPosition.setText(mils + " / " + maxSeekPosition);
+
     }
 
-    public void clear() {
-        manager.clear();
-    }
 
-    public SoundPlayer getManager() {
-        return manager;
-    }
+
 }

@@ -5,13 +5,16 @@ package dmitriiserdun.gmail.com.musickiua.base.player;
  */
 
 public interface ControlPlayer {
-    public void start();
+    public void startOrPause();
 
     public void stop();
 
     public void resume();
 
-    public void pause();
+
+    public void next();
+
+    public void back();
 
     public void isRepeat(boolean repeat);
 

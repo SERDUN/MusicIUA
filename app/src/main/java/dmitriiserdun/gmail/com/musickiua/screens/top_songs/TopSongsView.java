@@ -1,9 +1,7 @@
 package dmitriiserdun.gmail.com.musickiua.screens.top_songs;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -12,7 +10,6 @@ import android.view.Menu;
 import android.view.View;
 import android.support.v7.widget.Toolbar;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 
@@ -24,11 +21,11 @@ import java.util.concurrent.TimeUnit;
 
 import dmitriiserdun.gmail.com.musickiua.R;
 import dmitriiserdun.gmail.com.musickiua.base.BaseFragment;
+import dmitriiserdun.gmail.com.musickiua.base.player.ControlPlayer;
+import dmitriiserdun.gmail.com.musickiua.base.player.ManagerSoundPlayer;
 import dmitriiserdun.gmail.com.musickiua.base.player.SPlayerView;
 import dmitriiserdun.gmail.com.musickiua.model.Sound;
-import dmitriiserdun.gmail.com.musickiua.screens.player.PlayerFragment;
 import dmitriiserdun.gmail.com.musickiua.screens.sounds.SoundsRecyclerAdapter;
-import dmitriiserdun.gmail.com.musickiua.services.MediaPlayService;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action2;
@@ -98,6 +95,13 @@ public class TopSongsView implements TopSongsContract.View {
 
     }
 
+//    @Override
+//    public void performViewPlayer(ManagerSoundPlayer managerSoundPlayer) {
+//        sPlayerView.initViewObserver(managerSoundPlayer.getController());
+//        managerSoundPlayer.initObserver(sPlayerView.getInputViewData());
+//    }
+
+
     @Override
     public void addSoundsList(ArrayList<Sound> sounds) {
         soundsRecyclerAdapter.updateData(sounds);
@@ -113,12 +117,6 @@ public class TopSongsView implements TopSongsContract.View {
         return baseFragment.getContext();
     }
 
-    @Override
-    public void updateSoundsInPlayer(ArrayList<Sound> sounds) {
-        //sPlayerView.putSounds(sounds);
-
-    }
-
 
     @Override
     public Observable<CharSequence> getSearchText() {
@@ -128,6 +126,11 @@ public class TopSongsView implements TopSongsContract.View {
                 .observeOn(Schedulers.io())
                 .debounce(300, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @Override
+    public void initControllerWithPlayer(ControlPlayer controlPlayer) {
+        sPlayerView.initController(controlPlayer);
     }
 
     @Override

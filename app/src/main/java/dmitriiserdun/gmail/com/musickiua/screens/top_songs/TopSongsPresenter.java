@@ -1,7 +1,5 @@
 package dmitriiserdun.gmail.com.musickiua.screens.top_songs;
 
-import android.util.Log;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
@@ -11,13 +9,8 @@ import dmitriiserdun.gmail.com.musickiua.model.FoundSounds;
 import dmitriiserdun.gmail.com.musickiua.model.Sound;
 import dmitriiserdun.gmail.com.musickiua.repository.SoundManagerRepository;
 import dmitriiserdun.gmail.com.musickiua.repository.remote.RemoteSoundRepository;
-import dmitriiserdun.gmail.com.musickiua.screens.playList.PlayListContract;
-import dmitriiserdun.gmail.com.musickiua.storage.provider.ContractClass;
-import dmitriiserdun.gmail.com.musickiua.storage.provider.ConvertHelper;
 import rx.functions.Action1;
 import rx.functions.Action2;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * Created by dmitro on 19.11.17.
@@ -30,13 +23,20 @@ public class TopSongsPresenter implements TopSongsContract.Presenter {
     private BaseFragment baseFragment;
     private String searchingKey = "";
 
+
     public TopSongsPresenter(final TopSongsContract.View view, BaseFragment baseFragment) {
         this.view = view;
         this.baseFragment = baseFragment;
         soundManagerRepository = SoundManagerRepository.getInstance(RemoteSoundRepository.getInstance());
         initCallbacks();
-        managerSoundPlayer = ManagerSoundPlayer.getInstance();
+        initPlayer();
 
+
+    }
+
+    private void initPlayer() {
+        managerSoundPlayer = ManagerSoundPlayer.getInstance();
+        view.initControllerWithPlayer(managerSoundPlayer.getController());
     }
 
     @Override
@@ -46,10 +46,14 @@ public class TopSongsPresenter implements TopSongsContract.Presenter {
 
     @Override
     public void initCallbacks() {
+
+
         view.setOnItemListListener(new Action2<Sound, Integer>() {
             @Override
-            public void call(Sound sound, Integer integer) {
+            public void call(Sound sound, Integer position) {
                 view.showPlayer(true);
+                managerSoundPlayer.selectAndPlaySound(view.getContext(), position);
+
             }
         });
 
@@ -65,18 +69,16 @@ public class TopSongsPresenter implements TopSongsContract.Presenter {
             }
 
         });
-        view.onClickFind().
-
-                subscribe(new Action1<Void>() {
-                    @Override
-                    public void call(Void aVoid) {
-                        view.hideButtonFind();
-                        view.hideSearchView();
-                        view.showMainLoader(true);
-                        view.showUI(false);
-                        findSound();
-                    }
-                });
+        view.onClickFind().subscribe(new Action1<Void>() {
+            @Override
+            public void call(Void aVoid) {
+                view.hideButtonFind();
+                view.hideSearchView();
+                view.showMainLoader(true);
+                view.showUI(false);
+                findSound();
+            }
+        });
     }
 
     public void findSound() {
@@ -88,10 +90,7 @@ public class TopSongsPresenter implements TopSongsContract.Presenter {
                     view.addSoundsList(foundSounds.getSounds());
                     view.showMainLoader(false);
                     view.showUI(true);
-                    //  view.updateSoundsInPlayer(foundSounds.getSounds());
-                    //view.updateSoundsInPlayer(foundSounds.getSounds());
                     managerSoundPlayer.initSounds(view.getContext(), foundSounds.getSounds());
-                    managerSoundPlayer.selectAndPlaySound(view.getContext());
                 }
             });
         } catch (UnsupportedEncodingException e) {

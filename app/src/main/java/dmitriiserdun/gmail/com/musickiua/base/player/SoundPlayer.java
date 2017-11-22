@@ -2,7 +2,7 @@ package dmitriiserdun.gmail.com.musickiua.base.player;
 
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
-import android.os.Handler;
+import android.util.Log;
 
 import com.danikula.videocache.HttpProxyCacheServer;
 
@@ -12,6 +12,9 @@ import dmitriiserdun.gmail.com.musickiua.base.App;
 import dmitriiserdun.gmail.com.musickiua.model.Sound;
 import rx.functions.Action1;
 import rx.functions.Action2;
+import rx.subjects.PublishSubject;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by dmitro on 18.11.17.
@@ -20,29 +23,18 @@ import rx.functions.Action2;
 public class SoundPlayer implements OnCompletionListener, MediaPlayer.OnPreparedListener {
     private static final SoundPlayer ourInstance = new SoundPlayer();
     private ProxyMediaPlayer proxyMediaPlayer;
-    private int currentPosition = 0;
+    private int currentSoundPosition = 0;
     private ArrayList<Sound> sounds;
-    private Handler handler = new Handler();
-    private TimePositionCursor timePositionCursor;
-    private Action1<Integer> currentTimePosition;
-    private Action2<Integer, String> dataSound;
-
+    public PublishSubject<Sound> soundPublishSubject;
 
     private SoundPlayer() {
         proxyMediaPlayer = new ProxyMediaPlayer();
-        timePositionCursor = new TimePositionCursor();
         sounds = new ArrayList<>();
+        soundPublishSubject = PublishSubject.create();
     }
 
     public static SoundPlayer getInstance() {
         return ourInstance;
-    }
-
-
-    public void play(Sound sound) {
-        preparePlayer();
-        proxyMediaPlayer.play(sound);
-
     }
 
     public void play() {
@@ -50,7 +42,11 @@ public class SoundPlayer implements OnCompletionListener, MediaPlayer.OnPrepared
     }
 
     public void play(int position) {
-        if (sounds != null) perform(sounds, position);
+        if (sounds != null) {
+            currentSoundPosition=position;
+            preparePlayer();
+            perform(sounds, position);
+        }
     }
 
     public void play(ArrayList<Sound> sounds) {
@@ -60,21 +56,20 @@ public class SoundPlayer implements OnCompletionListener, MediaPlayer.OnPrepared
     public void play(ArrayList<Sound> sounds, int position) {
         preparePlayer();
         this.sounds = sounds;
-        this.currentPosition = position;
-        perform(this.sounds, currentPosition);
+        this.currentSoundPosition = position;
+        perform(this.sounds, currentSoundPosition);
     }
 
     public void perform(ArrayList<Sound> sounds, int position) {
         MediaPlayer mediaPlayer = proxyMediaPlayer.play(sounds.get(position));
         mediaPlayer.setOnCompletionListener(this);
         mediaPlayer.setOnPreparedListener(this);
-        handler.removeCallbacks(timePositionCursor);
-        handler.postDelayed(timePositionCursor, 50);
+
 
     }
 
 
-    private void preparePlayer() {
+    public void preparePlayer() {
         if (proxyMediaPlayer.isPlaying()) {
             proxyMediaPlayer.stop();
             proxyMediaPlayer.dispose();
@@ -83,20 +78,12 @@ public class SoundPlayer implements OnCompletionListener, MediaPlayer.OnPrepared
 
 
     private void playNextSound() {
-        currentPosition++;
-        if (currentPosition < sounds.size()) {
+        currentSoundPosition++;
+        if (currentSoundPosition < sounds.size()) {
             proxyMediaPlayer.dispose();
-            perform(sounds, currentPosition);
+            perform(sounds, currentSoundPosition);
         }
 
-    }
-
-    public void setCurrentTimePosition(Action1<Integer> currentTimePosition) {
-        this.currentTimePosition = currentTimePosition;
-    }
-
-    public void setDataSound(Action2<Integer, String> dataSound) {
-        this.dataSound = dataSound;
     }
 
 
@@ -107,22 +94,13 @@ public class SoundPlayer implements OnCompletionListener, MediaPlayer.OnPrepared
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-        //if ((dataSound != null))
-//            dataSound.call(mp.getDuration(), sounds.get(currentPosition).getName());
+        Log.d(TAG, "onPrepared: ttt");
+        Sound current = sounds.get(currentSoundPosition);
+        current.setTimeMilis(mp.getDuration());
+        soundPublishSubject.onNext(sounds.get(currentSoundPosition));
+        soundPublishSubject.publish();
         proxyMediaPlayer.play();
 
-    }
-
-    private class TimePositionCursor implements Runnable {
-
-        @Override
-        public void run() {
-            if (!proxyMediaPlayer.isStopped()) {
-                // if (currentTimePosition != null)
-                // currentTimePosition.call(proxyMediaPlayer.getCurrentTimePosition());
-                handler.postDelayed(timePositionCursor, 50);
-            }
-        }
     }
 
 
@@ -138,8 +116,8 @@ public class SoundPlayer implements OnCompletionListener, MediaPlayer.OnPrepared
         proxyMediaPlayer.play();
     }
 
-    public int getCurrentPosition() {
-        return currentPosition;
+    public int getCurrentSoundPosition() {
+        return proxyMediaPlayer.getCurrentTimePosition();
     }
 
     public boolean isPaused() {
@@ -147,19 +125,19 @@ public class SoundPlayer implements OnCompletionListener, MediaPlayer.OnPrepared
     }
 
     public void nextSound() {
-        currentPosition++;
-        if (currentPosition < sounds.size()) {
+        currentSoundPosition++;
+        if (currentSoundPosition < sounds.size()) {
             preparePlayer();
-            perform(sounds, currentPosition);
+            perform(sounds, currentSoundPosition);
         }
     }
 
     public void backSound() {
 
-        currentPosition--;
-        if (currentPosition >= 0) {
+        currentSoundPosition--;
+        if (currentSoundPosition >= 0) {
             preparePlayer();
-            perform(sounds, currentPosition);
+            perform(sounds, currentSoundPosition);
         }
     }
 
@@ -177,6 +155,7 @@ public class SoundPlayer implements OnCompletionListener, MediaPlayer.OnPrepared
 
     public void clear() {
         sounds.clear();
+
     }
 
 
@@ -231,14 +210,11 @@ public class SoundPlayer implements OnCompletionListener, MediaPlayer.OnPrepared
                 return;
             try {
                 synchronized (this) {
-                    // if (!isPrepared) mediaPlayer.prepare();
                     isPaused = false;
                     mediaPlayer.start();
                 }
             } catch (IllegalStateException e) {
                 e.printStackTrace();
-                // } catch (IOException e) {
-                //    e.printStackTrace();
             }
         }
 
@@ -278,4 +254,7 @@ public class SoundPlayer implements OnCompletionListener, MediaPlayer.OnPrepared
         }
     }
 
+    public ProxyMediaPlayer getProxyMediaPlayer() {
+        return proxyMediaPlayer;
+    }
 }

@@ -10,20 +10,29 @@ import dmitriiserdun.gmail.com.musickiua.model.Sound;
 import dmitriiserdun.gmail.com.musickiua.services.MediaPlayService;
 import dmitriiserdun.gmail.com.musickiua.storage.provider.ContractClass;
 import dmitriiserdun.gmail.com.musickiua.storage.provider.ConvertHelper;
+import rx.functions.Action1;
 
 /**
  * Created by dmitro on 21.11.17.
  */
 
 public class ManagerSoundPlayer implements ControlPlayer {
+
     private static final ManagerSoundPlayer ourInstance = new ManagerSoundPlayer();
 
     public static ManagerSoundPlayer getInstance() {
         return ourInstance;
     }
 
+
     private ManagerSoundPlayer() {
     }
+
+
+    public ControlPlayer getController() {
+        return this;
+    }
+
 
     public void selectAndPlaySound(Context context, int position) {
         Intent intent = new Intent(context, MediaPlayService.class);
@@ -35,7 +44,7 @@ public class ManagerSoundPlayer implements ControlPlayer {
 
     public void selectAndPlaySound(Context context) {
         Intent intent = new Intent(context, MediaPlayService.class);
-        intent.putExtra(MediaPlayService.DataSourceController.KEY, MediaPlayService.DataSourceController.LOAD);
+        //intent.putExtra(MediaPlayService.DataSourceController.KEY, MediaPlayService.DataSourceController.LOAD);
         intent.putExtra(MediaPlayService.PlayController.KEY, MediaPlayService.PlayController.PLAY);
         context.startService(intent);
     }
@@ -53,8 +62,8 @@ public class ManagerSoundPlayer implements ControlPlayer {
 
 
     @Override
-    public void start() {
-
+    public void startOrPause() {
+        // soundPlayer.play();
     }
 
     @Override
@@ -67,13 +76,24 @@ public class ManagerSoundPlayer implements ControlPlayer {
 
     }
 
-    @Override
-    public void pause() {
 
+    @Override
+    public void next() {
+        Intent intent = new Intent(App.getInstance(), MediaPlayService.class);
+        intent.putExtra(MediaPlayService.PlayController.KEY, MediaPlayService.PlayController.NEXT);
+        App.getInstance().startService(intent);
     }
+
+    @Override
+    public void back() {
+        Intent intent = new Intent(App.getInstance(), MediaPlayService.class);
+        intent.putExtra(MediaPlayService.PlayController.KEY, MediaPlayService.PlayController.BACK);
+        App.getInstance().startService(intent);    }
 
     @Override
     public void isRepeat(boolean repeat) {
 
     }
+
+
 }

@@ -6,6 +6,8 @@ import java.util.ArrayList;
 
 import dmitriiserdun.gmail.com.musickiua.base.BasePresenter;
 import dmitriiserdun.gmail.com.musickiua.base.BaseView;
+import dmitriiserdun.gmail.com.musickiua.base.player.ControlPlayer;
+import dmitriiserdun.gmail.com.musickiua.base.player.ManagerSoundPlayer;
 import dmitriiserdun.gmail.com.musickiua.model.Playlist;
 import dmitriiserdun.gmail.com.musickiua.model.Sound;
 import dmitriiserdun.gmail.com.musickiua.screens.playList.PlayListContract;
@@ -25,15 +27,16 @@ public class TopSongsContract {
 
     interface View extends BaseView<Presenter> {
 
+
         public void addSoundsList(ArrayList<Sound> sounds);
 
         public void showMessage(int id);
 
         public Context getContext();
 
-        public void updateSoundsInPlayer(ArrayList<Sound> sounds);
-
         public Observable<CharSequence> getSearchText();
+
+        public void initControllerWithPlayer(ControlPlayer controlPlayer);
 
         rx.Observable<Void> onClickFind();
 
