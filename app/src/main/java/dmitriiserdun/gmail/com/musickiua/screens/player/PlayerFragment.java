@@ -1,18 +1,12 @@
 package dmitriiserdun.gmail.com.musickiua.screens.player;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import dmitriiserdun.gmail.com.musickiua.R;
 import dmitriiserdun.gmail.com.musickiua.base.BaseFragment;
-import dmitriiserdun.gmail.com.musickiua.screens.top_songs.TopSongsContract;
-import dmitriiserdun.gmail.com.musickiua.screens.top_songs.TopSongsPresenter;
-import dmitriiserdun.gmail.com.musickiua.screens.top_songs.TopSongsView;
 
 
 public class PlayerFragment extends BaseFragment {
@@ -42,7 +36,7 @@ public class PlayerFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View root = inflater.inflate(R.layout.fragment_player, container, false);
+        View root = inflater.inflate(R.layout.view_player, container, false);
         view = new PlayerView(root, this);
         presenter = new PlayerPresenter(this, view);
         return root;

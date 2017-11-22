@@ -117,6 +117,10 @@ public class SoundPlayer implements OnCompletionListener, MediaPlayer.OnPrepared
     }
 
     public int getCurrentSoundPosition() {
+        return currentSoundPosition;
+    }
+
+    public int getCurrentTimePosition() {
         return proxyMediaPlayer.getCurrentTimePosition();
     }
 

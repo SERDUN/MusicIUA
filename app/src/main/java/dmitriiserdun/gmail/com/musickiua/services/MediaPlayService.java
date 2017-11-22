@@ -20,7 +20,6 @@ import dmitriiserdun.gmail.com.musickiua.base.player.SoundPlayer;
 import dmitriiserdun.gmail.com.musickiua.model.Sound;
 import dmitriiserdun.gmail.com.musickiua.storage.provider.ContractClass;
 import dmitriiserdun.gmail.com.musickiua.storage.provider.ConvertHelper;
-import rx.Subscriber;
 import rx.functions.Action1;
 
 import static android.content.ContentValues.TAG;
@@ -29,6 +28,7 @@ public class MediaPlayService extends Service {
     private SoundPlayer soundPlayer;
     private TimePositionCursor timePositionCursor;
     private Handler handler = new Handler();
+    private boolean statePlay = false;
 
 
     public static class PlayController {
@@ -45,6 +45,7 @@ public class MediaPlayService extends Service {
         public static String KEY = "data_source_controller";
         public static String POSITION = "position";
         public static int LOAD = 1;
+        public static String IS_LIST = "is_list";
 
 
     }
@@ -138,8 +139,36 @@ public class MediaPlayService extends Service {
     private void handleClickPlay(Intent intent) {
         int position = intent.getIntExtra(DataSourceController.POSITION, 0);
         Log.d(TAG, "onStartCommand: CURRENT_POSITION: " + position);
-        soundPlayer.play(position);
+        int ff = soundPlayer.getCurrentSoundPosition();
+        boolean isList = intent.getBooleanExtra(DataSourceController.IS_LIST, false);
 
+        if (soundPlayer.isPlayingSound() && !isList) {
+            soundPlayer.pause();
+            statePlay = false;
+        } else if (soundPlayer.isPlayingSound() && isList) {
+            soundPlayer.play(position);
+            statePlay = true;
+        } else if (!soundPlayer.isPlayingSound() && !soundPlayer.isPaused()) {
+            soundPlayer.play(position);
+            statePlay = true;
+        } else if (!soundPlayer.isPlayingSound() && soundPlayer.isPaused()) {
+            soundPlayer.resume();
+            statePlay = true;
+
+        }
+
+
+        updateStateViewController();
+
+
+    }
+
+
+    public void updateStateViewController() {
+        Intent intent = new Intent(Const.BROADCAST_ACTION);
+        intent.putExtra("statePlay", statePlay);
+        intent.putExtra("status", "buttonState");
+        getBaseContext().sendBroadcast(intent);
 
     }
 
@@ -151,7 +180,6 @@ public class MediaPlayService extends Service {
             @Override
             public void call(Sound sound) {
                 Log.d(TAG, "onStartCommand: SUBSCRIBE------------------: " + sound.getName());
-
                 Intent intent = new Intent(Const.BROADCAST_ACTION);
                 intent.putExtra("status", "sound_data");
                 intent.putExtra("sound", sound);
@@ -183,7 +211,7 @@ public class MediaPlayService extends Service {
             //currentTimePosition.call(proxyMediaPlayer.getCurrentTimePosition());
 
             Intent intent = new Intent(Const.BROADCAST_ACTION);
-            intent.putExtra("currentSeekTime", soundPlayer.getCurrentSoundPosition());
+            intent.putExtra("currentSeekTime", soundPlayer.getCurrentTimePosition());
             intent.putExtra("status", "seek_data");
 
             getBaseContext().sendBroadcast(intent);

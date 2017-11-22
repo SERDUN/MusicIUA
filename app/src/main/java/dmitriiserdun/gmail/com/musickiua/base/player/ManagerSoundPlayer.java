@@ -20,6 +20,8 @@ public class ManagerSoundPlayer implements ControlPlayer {
 
     private static final ManagerSoundPlayer ourInstance = new ManagerSoundPlayer();
 
+    private int lastClicedPosition = 0;
+
     public static ManagerSoundPlayer getInstance() {
         return ourInstance;
     }
@@ -36,6 +38,9 @@ public class ManagerSoundPlayer implements ControlPlayer {
 
     public void selectAndPlaySound(Context context, int position) {
         Intent intent = new Intent(context, MediaPlayService.class);
+        lastClicedPosition = position;
+
+        intent.putExtra(MediaPlayService.DataSourceController.IS_LIST, true);
         intent.putExtra(MediaPlayService.DataSourceController.KEY, MediaPlayService.DataSourceController.LOAD);
         intent.putExtra(MediaPlayService.PlayController.KEY, MediaPlayService.PlayController.PLAY);
         intent.putExtra(MediaPlayService.DataSourceController.POSITION, position);
@@ -63,7 +68,12 @@ public class ManagerSoundPlayer implements ControlPlayer {
 
     @Override
     public void startOrPause() {
-        // soundPlayer.play();
+        Intent intent = new Intent(App.getInstance(), MediaPlayService.class);
+        intent.putExtra(MediaPlayService.DataSourceController.IS_LIST, false);
+        intent.putExtra(MediaPlayService.PlayController.KEY, MediaPlayService.PlayController.PLAY);
+        intent.putExtra(MediaPlayService.DataSourceController.POSITION, lastClicedPosition);
+
+        App.getInstance().startService(intent);
     }
 
     @Override
@@ -88,7 +98,8 @@ public class ManagerSoundPlayer implements ControlPlayer {
     public void back() {
         Intent intent = new Intent(App.getInstance(), MediaPlayService.class);
         intent.putExtra(MediaPlayService.PlayController.KEY, MediaPlayService.PlayController.BACK);
-        App.getInstance().startService(intent);    }
+        App.getInstance().startService(intent);
+    }
 
     @Override
     public void isRepeat(boolean repeat) {

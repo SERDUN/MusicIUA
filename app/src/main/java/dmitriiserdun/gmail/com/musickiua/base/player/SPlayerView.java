@@ -51,7 +51,7 @@ public class SPlayerView extends LinearLayout {
     }
 
     private void init(Context context) {
-        rootView = inflate(context, R.layout.fragment_player, this);
+        rootView = inflate(context, R.layout.view_player, this);
         this.soundName = rootView.findViewById(R.id.currentSoundNameTV);
         this.currentPosition = rootView.findViewById(R.id.currentPositionTv);
         this.playControllerButton = rootView.findViewById(R.id.playControllerButton);
@@ -59,6 +59,13 @@ public class SPlayerView extends LinearLayout {
         this.backSoundButton = rootView.findViewById(R.id.backPlay);
         this.progressTime = rootView.findViewById(R.id.seekBar);
         initListener();
+        initButton();
+    }
+
+    private void initButton() {
+        playControllerButton.setText("=>");
+        nextCountButton.setText("->");
+        backSoundButton.setText("<-");
     }
 
     private void initListener() {
@@ -66,6 +73,7 @@ public class SPlayerView extends LinearLayout {
             @Override
             public void onClick(View v) {
                 controlPlayer.startOrPause();
+
             }
         });
 
@@ -88,9 +96,16 @@ public class SPlayerView extends LinearLayout {
             @Override
             public void onReceive(Context context, Intent intent) {
                 String status = intent.getStringExtra("status");
+                if (status.equals("buttonState")) {
+                    boolean playState = intent.getBooleanExtra("statePlay", false);
+                    handleStatePlayController(playState);
+
+                }
                 if (status.equals("sound_data")) {
                     handleViewData((Sound) intent.getSerializableExtra("sound"));
-                } else if (status.equals("seek_data")) {
+                }
+
+                if (status.equals("seek_data")) {
                     handleSeekBar(intent.getIntExtra("currentSeekTime", 0));
                 }
             }
@@ -111,11 +126,16 @@ public class SPlayerView extends LinearLayout {
         progressTime.setProgress(position);
         String mils = String.format("%d:%d", TimeUnit.MILLISECONDS.toMinutes(position), TimeUnit.MILLISECONDS.toSeconds(position) -
                 TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(position)));
-
         currentPosition.setText(mils + " / " + maxSeekPosition);
-
     }
 
+    public void handleStatePlayController(boolean state) {
+        if (state) {
+            playControllerButton.setText("||");
+        } else {
+            playControllerButton.setText("->");
 
+        }
+    }
 
 }

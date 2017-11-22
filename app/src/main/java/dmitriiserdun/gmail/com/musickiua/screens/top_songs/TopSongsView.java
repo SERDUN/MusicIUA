@@ -60,7 +60,7 @@ public class TopSongsView implements TopSongsContract.View {
 
     private void initPlayer() {
         sPlayerView = root.findViewById(R.id.player);
-        //player = (PlayerFragment) baseFragment.getChildFragmentManager().findFragmentById(R.id.fragment_player);
+        //player = (PlayerFragment) baseFragment.getChildFragmentManager().findFragmentById(R.id.view_player);
         Log.d("sds", "initPlayer: ");
 
     }

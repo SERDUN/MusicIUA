@@ -70,11 +70,11 @@ public class SoundsPresenter implements SoundsContract.Presenter {
             @Override
             public void call(Sound sound, Integer integer) {
                 view.setColorItem(sound.hashCode());
-                if (soundPlayer.isPlayingSound() && soundPlayer.getCurrentSoundPosition() == integer) {
+                if (soundPlayer.isPlayingSound() && soundPlayer.getCurrentTimePosition() == integer) {
                     soundPlayer.pause();
                     view.setColorItem(sound.hashCode());
                     view.morphPlay();
-                } else if (soundPlayer.isPaused() && soundPlayer.getCurrentSoundPosition() == integer) {
+                } else if (soundPlayer.isPaused() && soundPlayer.getCurrentTimePosition() == integer) {
                     soundPlayer.resume();
                     view.morphPause();
                 } else {
@@ -90,7 +90,7 @@ public class SoundsPresenter implements SoundsContract.Presenter {
         view.onClickNext().subscribe(new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
-                view.setColorItem(soundsList.get(soundPlayer.getCurrentSoundPosition() + 1).hashCode());
+                view.setColorItem(soundsList.get(soundPlayer.getCurrentTimePosition() + 1).hashCode());
                 soundPlayer.nextSound();
             }
         });
@@ -98,7 +98,7 @@ public class SoundsPresenter implements SoundsContract.Presenter {
         view.onClickBack().subscribe(new Action1<Void>() {
             @Override
             public void call(Void aVoid) {
-                view.setColorItem(soundsList.get(soundPlayer.getCurrentSoundPosition() - 1).hashCode());
+                view.setColorItem(soundsList.get(soundPlayer.getCurrentTimePosition() - 1).hashCode());
                 soundPlayer.backSound();
 
             }
