@@ -1,13 +1,16 @@
 package dmitriiserdun.gmail.com.musickiua.model;
 
+import java.io.Serializable;
+
 /**
  * Created by dmitro on 15.11.17.
  */
 
-public class Sound {
+public class Sound implements Serializable{
     private String name;
     private String author;
     private String time;
+    private int timeMilis;
     private String url;
 
     public Sound(String name, String author, String time, String url) {
@@ -15,6 +18,14 @@ public class Sound {
         this.author = author;
         this.time = time;
         this.url = url;
+    }
+
+    public int getTimeMilis() {
+        return timeMilis;
+    }
+
+    public void setTimeMilis(int timeMilis) {
+        this.timeMilis = timeMilis;
     }
 
     public String getUrl() {

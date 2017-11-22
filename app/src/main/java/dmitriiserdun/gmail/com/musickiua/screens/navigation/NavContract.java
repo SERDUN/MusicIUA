@@ -2,13 +2,8 @@ package dmitriiserdun.gmail.com.musickiua.screens.navigation;
 
 import android.content.Context;
 
-import java.util.ArrayList;
-
 import dmitriiserdun.gmail.com.musickiua.base.BasePresenter;
 import dmitriiserdun.gmail.com.musickiua.base.BaseView;
-import dmitriiserdun.gmail.com.musickiua.model.Playlist;
-import dmitriiserdun.gmail.com.musickiua.screens.playList.PlayListContract;
-import rx.functions.Action1;
 
 /**
  * Created by dmitro on 19.11.17.

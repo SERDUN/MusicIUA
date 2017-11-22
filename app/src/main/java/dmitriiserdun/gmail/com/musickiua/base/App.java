@@ -2,14 +2,14 @@ package dmitriiserdun.gmail.com.musickiua.base;
 
 import android.app.Application;
 import android.content.Context;
+import android.net.Uri;
 import android.support.multidex.MultiDex;
 
 import com.danikula.videocache.HttpProxyCacheServer;
+import com.danikula.videocache.file.FileNameGenerator;
 import com.orhanobut.hawk.Hawk;
 
 import java.io.File;
-
-import dmitriiserdun.gmail.com.musickiua.base.player.MyFileGenerator;
 
 
 /**
@@ -36,9 +36,16 @@ public class App extends Application {
     }
 
     private HttpProxyCacheServer newProxy() {
-        File file=new File("/storage/emulated/0","iua");
+        File file = new File("/storage/emulated/0", "iua");
         return new HttpProxyCacheServer.Builder(this)
-                .fileNameGenerator(new MyFileGenerator()).cacheDirectory(file).build();
+                .fileNameGenerator(new FileNameGenerator() {
+                    @Override
+                    public String generate(String url) {
+                        Uri uri = Uri.parse(url);
+                        String videoId = uri.getQueryParameter("name");
+                        return videoId + ".mp3";
+                    }
+                }).cacheDirectory(file).build();
     }
 
     public static App getInstance() {

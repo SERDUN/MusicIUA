@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import dmitriiserdun.gmail.com.musickiua.base.BasePresenter;
 import dmitriiserdun.gmail.com.musickiua.base.BaseView;
+import dmitriiserdun.gmail.com.musickiua.base.player.ControlPlayer;
 import dmitriiserdun.gmail.com.musickiua.model.Sound;
 import rx.functions.Action2;
 
@@ -20,6 +21,7 @@ public class SoundsContract {
     }
 
     interface View extends BaseView<Presenter> {
+        public void initControllerWithPlayer(ControlPlayer controlPlayer);
 
         public void addPlayListsInList(ArrayList<Sound> sounds);
 
@@ -29,22 +31,8 @@ public class SoundsContract {
 
         public void setOnItemListListener(Action2<Sound, Integer> action0);
 
-        public void onSeekHandler(Runnable runnable);
-
-        public void setProgress(int position);
-
-        public void setMaxProgress(int position);
 
 
-        rx.Observable<Void> onClickPlay();
-        rx.Observable<Void> onClickBack();
-        rx.Observable<Void> onClickNext();
-
-        public void setColorItem(int hasCode);
-
-        public void morphPlay();
-
-        public void morphPause();
 
 
     }

@@ -2,6 +2,7 @@ package dmitriiserdun.gmail.com.musickiua.repository;
 
 import java.util.List;
 
+import dmitriiserdun.gmail.com.musickiua.model.FoundSounds;
 import dmitriiserdun.gmail.com.musickiua.model.Playlist;
 import dmitriiserdun.gmail.com.musickiua.model.Sound;
 import io.reactivex.annotations.NonNull;
@@ -42,6 +43,11 @@ public class SoundManagerRepository implements SoundRepository {
     @Override
     public Observable<List<Sound>> getSounds(Integer userId, String playlistId) {
         return remoteSoundRepository.getSounds(userId, playlistId);
+    }
+
+    @Override
+    public Observable<FoundSounds> searchSounds(String words, int page) {
+        return remoteSoundRepository.searchSounds(words, page);
     }
 
     @Override

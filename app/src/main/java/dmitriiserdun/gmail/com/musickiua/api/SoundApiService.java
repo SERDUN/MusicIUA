@@ -11,6 +11,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 import retrofit2.http.Streaming;
 import retrofit2.http.Url;
 import rx.Observable;
@@ -38,14 +39,19 @@ public interface SoundApiService {
 
 
     @GET("user/{userId}/playlist/{playlist_id}")
-    public Observable<Response<ResponseBody>> getSoundsHtml(@Path("userId") Integer userId,@Path("playlist_id") String playlist_id);
+    public Observable<Response<ResponseBody>> getSoundsHtml(@Path("userId") Integer userId, @Path("playlist_id") String playlist_id);
+
+
+    @GET("search?_subm=search")
+    public Observable<Response<ResponseBody>> searchSound(@Query(value = "words",encoded = true) String words, @Query("subm") int subm, @Query("p") int page);
 
 
     @GET
     public Call<ResponseBody> getSoundPlayerFileUrlHtml(@Url String url);
 
     @GET("get/{sound_id}/{key_for_sound}")
-    public Call<ResponseBody> getFileForLoadSound(@Path("sound_id") String soundId,@Path("key_for_sound") String keyForSound);
+    public Call<ResponseBody> getFileForLoadSound(@Path("sound_id") String soundId, @Path("key_for_sound") String keyForSound);
+
 
     @Headers("Content-Type:application/octet-stream")
     @GET

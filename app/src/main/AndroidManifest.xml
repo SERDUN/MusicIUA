@@ -25,7 +25,23 @@
         <activity
             android:name=".screens.navigation.NavActivity"
             android:label="@string/title_activity_navigation"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".screens.navigation.NavActivity" />
+        </activity>
+
+        <service
+            android:name=".services.MediaPlayService"
+            android:enabled="true"
+            android:exported="true"
+            android:process=":service"
+            android:stopWithTask="false" />
+        <provider
+            android:name=".storage.provider.SoundsProvider"
+            android:authorities="dmitriiserdun.gmail.com.musickiua.storage.provider.sounds"
+            android:exported="false" />
+
     </application>
 
 </manifest>

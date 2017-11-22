@@ -58,4 +58,6 @@ public class BaseFragment extends Fragment {
     public Bus getBus() {
         return bus;
     }
+
+
 }

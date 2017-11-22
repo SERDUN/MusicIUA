@@ -1,18 +1,14 @@
 package dmitriiserdun.gmail.com.musickiua.screens.top_songs;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import dmitriiserdun.gmail.com.musickiua.R;
 import dmitriiserdun.gmail.com.musickiua.base.BaseFragment;
-import dmitriiserdun.gmail.com.musickiua.screens.playList.PlayListContract;
-import dmitriiserdun.gmail.com.musickiua.screens.playList.PlayListPresenter;
-import dmitriiserdun.gmail.com.musickiua.screens.playList.PlayListView;
+
 
 public class TopSongsFragment extends BaseFragment {
     public final static String KEY_FRAGMENT = TopSongsFragment.class.getName();
@@ -46,6 +42,37 @@ public class TopSongsFragment extends BaseFragment {
         View root = inflater.inflate(R.layout.fragment_top_songs, container, false);
         view = new TopSongsView(root, this);
         presenter = new TopSongsPresenter(view, this);
+
+
+//        ContentObserver ob = new ContentObserver(new Handler(Looper.getMainLooper())) {
+//            @Override
+//            public void onChange(boolean selfChangem, Uri uri) {
+//                Cursor record = getContext().getContentResolver().query(uri,
+//                        ContractClass.Sounds.DEFAULT_PROJECTION,
+//                        null, null,
+//                        null);
+
+//        Cursor c = getContext().getContentResolver().query(
+//                ContractClass.Sounds.CONTENT_URI,
+//                ContractClass.Sounds.DEFAULT_PROJECTION,
+//                null, null,
+//                null);
+//        ArrayList<Sound> sounds = ConvertHelper.createSounds(c);
+//
+//        Log.d("sdsd", "onChange: ");
+//
+//        Cursor cr= getContext().getContentResolver().delete(
+//                ContractClass.Sounds.CONTENT_URI,
+//                null,
+//                null);
+//        ArrayList<Sound> sounds1 = ConvertHelper.createSounds(cr);
+
+        Log.d("sdsd", "onChange: ");
+
+
+//            }
+//        };
+//        getContext(). getContentResolver().registerContentObserver(ContractClass.Sounds.CONTENT_URI, true, ob);
         return root;
     }
 

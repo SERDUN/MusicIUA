@@ -8,7 +8,6 @@ import com.orhanobut.hawk.Hawk;
 import java.util.ArrayList;
 import java.util.List;
 
-import dmitriiserdun.gmail.com.musickiua.base.BaseActivity;
 import dmitriiserdun.gmail.com.musickiua.base.BaseFragment;
 import dmitriiserdun.gmail.com.musickiua.base.Const;
 import dmitriiserdun.gmail.com.musickiua.model.Playlist;
@@ -38,12 +37,6 @@ public class PlayListPresenter implements PlayListContract.Presenter {
             }
         });
 
-
-//        soundManagerRepository.getSounds(userId,playlists.get(0).getId()).subscribe(new Action1<List<Sound>>() {
-//            @Override
-//            public void call(List<Sound> sounds) {
-//            }
-//        });
         view.onClickListener(new Action1<String>() {
             @Override
             public void call(String s) {
