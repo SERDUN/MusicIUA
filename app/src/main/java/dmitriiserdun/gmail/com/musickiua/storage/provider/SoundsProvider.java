@@ -4,8 +4,10 @@ import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
@@ -14,6 +16,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import java.util.HashMap;
+
+import dmitriiserdun.gmail.com.musickiua.storage.base.DatabaseContract;
 
 /**
  * Created by dmitro on 12.10.17.
@@ -24,7 +28,7 @@ public class SoundsProvider extends ContentProvider {
     private static HashMap<String, String> soundProjectionMap;
 
 
-    private static final int SOUND = 1;
+    private static final int SOUNDS = 1;
     private static final int SOUND_ID = 2;
 
     private static final UriMatcher uriMatcher;
@@ -33,15 +37,15 @@ public class SoundsProvider extends ContentProvider {
 
     static {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
-        uriMatcher.addURI(ContractClass.AUTHORITY, "sound", SOUND);
-        uriMatcher.addURI(ContractClass.AUTHORITY, "sound/#", SOUND_ID);
+        uriMatcher.addURI(DatabaseContract.AUTHORITY, "sound", SOUNDS);
+        uriMatcher.addURI(DatabaseContract.AUTHORITY, "sound/#", SOUND_ID);
 
 
         soundProjectionMap = new HashMap<String, String>();
-        for (int i = 0; i < ContractClass.Sounds.DEFAULT_PROJECTION.length; i++) {
+        for (int i = 0; i < DatabaseContract.Sounds.DEFAULT_PROJECTION.length; i++) {
             soundProjectionMap.put(
-                    ContractClass.Sounds.DEFAULT_PROJECTION[i],
-                    ContractClass.Sounds.DEFAULT_PROJECTION[i]);
+                    DatabaseContract.Sounds.DEFAULT_PROJECTION[i],
+                    DatabaseContract.Sounds.DEFAULT_PROJECTION[i]);
         }
 
     }
@@ -58,14 +62,14 @@ public class SoundsProvider extends ContentProvider {
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         switch (uriMatcher.match(uri)) {
-            case SOUND:
-                qb.setTables(ContractClass.Sounds.TABLE_NAME);
+            case SOUNDS:
+                qb.setTables(DatabaseContract.Sounds.TABLE_NAME);
                 qb.setProjectionMap(soundProjectionMap);
                 break;
             case SOUND_ID:
-                qb.setTables(ContractClass.Sounds.TABLE_NAME);
+                qb.setTables(DatabaseContract.Sounds.TABLE_NAME);
                 qb.setProjectionMap(soundProjectionMap);
-                qb.appendWhere(ContractClass.Sounds._ID + "=" + uri.getPathSegments().get(ContractClass.Sounds.MESSAGE_ID_PATH_POSITION));
+                qb.appendWhere(DatabaseContract.Sounds._ID + "=" + uri.getPathSegments().get(DatabaseContract.Sounds.MESSAGE_ID_PATH_POSITION));
                 break;
 
             default:
@@ -83,10 +87,10 @@ public class SoundsProvider extends ContentProvider {
     public String getType(@NonNull Uri uri) {
 
         switch (uriMatcher.match(uri)) {
-            case SOUND:
-                return ContractClass.Sounds.CONTENT_TYPE;
+            case SOUNDS:
+                return DatabaseContract.Sounds.CONTENT_TYPE;
             case SOUND_ID:
-                return ContractClass.Sounds.CONTENT_ITEM_TYPE;
+                return DatabaseContract.Sounds.CONTENT_ITEM_TYPE;
 
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
@@ -97,7 +101,7 @@ public class SoundsProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues message) {
-        if (uriMatcher.match(uri) != SOUND) {
+        if (uriMatcher.match(uri) != SOUNDS) {
             throw new IllegalArgumentException("Unknown URI " + uri);
         }
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -110,10 +114,10 @@ public class SoundsProvider extends ContentProvider {
         long rowId = -1;
         Uri rowUri = Uri.EMPTY;
 
-        if (uriMatcher.match(uri) == SOUND) {
-            rowId = db.insert(ContractClass.Sounds.TABLE_NAME, null, values);
+        if (uriMatcher.match(uri) == SOUNDS) {
+            rowId = db.insert(DatabaseContract.Sounds.TABLE_NAME, null, values);
             if (rowId > 0) {
-                rowUri = ContentUris.withAppendedId(ContractClass.Sounds.CONTENT_ID_URI_BASE, rowId);
+                rowUri = ContentUris.withAppendedId(DatabaseContract.Sounds.CONTENT_ID_URI_BASE, rowId);
                 getContext().getContentResolver().notifyChange(rowUri, null);
             }
         }
@@ -122,21 +126,76 @@ public class SoundsProvider extends ContentProvider {
         return rowUri;
     }
 
+
+    @Override
+    public int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
+        if (uriMatcher.match(uri) != SOUNDS) {
+            throw new IllegalArgumentException("Unknown URI " + uri);
+        }
+        int nrInserted = 0;
+        long rowId = -1;
+        Uri rowUri = Uri.EMPTY;
+
+
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.beginTransaction();
+
+        try {
+
+            for (ContentValues cv : values) {
+
+//                db.insertOrThrow(ContractClass.News.TABLE_NAME, null, cv);
+
+                rowId = db.insertOrThrow(DatabaseContract.Sounds.TABLE_NAME, null, cv);
+
+                nrInserted++;
+            }
+
+            db.setTransactionSuccessful();
+            db.endTransaction();
+
+
+        } catch (SQLException ex) {
+
+            ex.printStackTrace();
+
+        } finally {
+
+        }
+        //Intent broadcastIntent = new Intent(DatabaseContract.AUTHORITY);
+
+        if (rowId > 0) {
+
+//            rowUri = ContentUris.withAppendedId(ContractClass.News.CONTENT_ID_URI_BASE, rowId);
+            rowUri = ContentUris.withAppendedId(DatabaseContract.Sounds.CONTENT_ID_URI_BASE, rowId);
+            getContext().getContentResolver().notifyChange(rowUri, null);
+            //broadcastIntent.putExtra(Const.BroadcastConst.STATUS, Const.BroadcastConst.STATUS_OK);
+            //getContext().sendBroadcast(broadcastIntent);
+
+        }else {
+           // broadcastIntent.putExtra(Const.BroadcastConst.STATUS, Const.BroadcastConst.STATUS_NOT_UPDATE);
+           // getContext().sendBroadcast(broadcastIntent);
+
+
+        }
+        return nrInserted;
+    }
+
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         String finalWhere;
         int count;
         switch (uriMatcher.match(uri)) {
-            case SOUND:
-                count = db.delete(ContractClass.Sounds.TABLE_NAME, selection, selectionArgs);
+            case SOUNDS:
+                count = db.delete(DatabaseContract.Sounds.TABLE_NAME, selection, selectionArgs);
                 break;
             case SOUND_ID:
-                finalWhere = ContractClass.Sounds._ID + " = " + uri.getPathSegments().get(ContractClass.Sounds.MESSAGE_ID_PATH_POSITION);
+                finalWhere = DatabaseContract.Sounds._ID + " = " + uri.getPathSegments().get(DatabaseContract.Sounds.MESSAGE_ID_PATH_POSITION);
                 if (selection != null) {
                     finalWhere = finalWhere + " AND " + selection;
                 }
-                count = db.delete(ContractClass.Sounds.TABLE_NAME, finalWhere, selectionArgs);
+                count = db.delete(DatabaseContract.Sounds.TABLE_NAME, finalWhere, selectionArgs);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
@@ -152,16 +211,16 @@ public class SoundsProvider extends ContentProvider {
         String finalWhere;
         String id;
         switch (uriMatcher.match(uri)) {
-            case SOUND:
-                count = db.update(ContractClass.Sounds.TABLE_NAME, values, where, whereArgs);
+            case SOUNDS:
+                count = db.update(DatabaseContract.Sounds.TABLE_NAME, values, where, whereArgs);
                 break;
             case SOUND_ID:
-                id = uri.getPathSegments().get(ContractClass.Sounds.MESSAGE_ID_PATH_POSITION);
-                finalWhere = ContractClass.Sounds._ID + " = " + id;
+                id = uri.getPathSegments().get(DatabaseContract.Sounds.MESSAGE_ID_PATH_POSITION);
+                finalWhere = DatabaseContract.Sounds._ID + " = " + id;
                 if (where != null) {
                     finalWhere = finalWhere + " AND " + where;
                 }
-                count = db.update(ContractClass.Sounds.TABLE_NAME, values, finalWhere, whereArgs);
+                count = db.update(DatabaseContract.Sounds.TABLE_NAME, values, finalWhere, whereArgs);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
@@ -172,23 +231,24 @@ public class SoundsProvider extends ContentProvider {
 
 
     private static class DatabaseHelper extends SQLiteOpenHelper {
-        public static final String DATABASE_TABLE_SOUNDS = ContractClass.Sounds.TABLE_NAME;
+        public static final String DATABASE_TABLE_SOUNDS = DatabaseContract.Sounds.TABLE_NAME;
         public static final String KEY_ROWID = "_id";
 
         private static final String DATABASE_CREATE_TABLE_MESSAGE =
                 "create table " + DATABASE_TABLE_SOUNDS + " ("
                         + KEY_ROWID + " integer primary key autoincrement, "
-                        + ContractClass.Sounds.COLUMN_NAME_TITLE + " string , "
-                        + ContractClass.Sounds.COLUMN_NAME_TIME + " string , "
-                        + ContractClass.Sounds.COLUMN_NAME_AUTHOR + " string , "
-                        + ContractClass.Sounds.COLUMN_NAME_URL + " string , "
+                        + DatabaseContract.Sounds.COLUMN_NAME_TITLE + " string , "
+                        + DatabaseContract.Sounds.COLUMN_NAME_TIME + " string , "
+                        + DatabaseContract.Sounds.COLUMN_SOUND_ID + " string , "
+                        + DatabaseContract.Sounds.COLUMN_NAME_AUTHOR + " string , "
+                        + DatabaseContract.Sounds.COLUMN_NAME_URL + " string , "
                         + " UNIQUE ( " + KEY_ROWID + " ) ON CONFLICT IGNORE" + ");";
 
 
         private Context ctx;
 
         DatabaseHelper(Context context) {
-            super(context, ContractClass.DATABASE_NAME, null, DATABASE_VERSION);
+            super(context, DatabaseContract.DATABASE_NAME, null, DATABASE_VERSION);
             ctx = context;
         }
 

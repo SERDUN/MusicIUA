@@ -2,8 +2,10 @@ package dmitriiserdun.gmail.com.musickiua.screens.login;
 
 import android.content.Context;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.jakewharton.rxbinding.view.RxView;
@@ -22,6 +24,8 @@ public class LoginView implements LoginContract.WelcomeView {
     private EditText editTextLogin;
     private EditText editTextPassword;
     private Button login;
+    private ProgressBar progressBar;
+    private ViewGroup viewGroup;
 
 
     public LoginView(View root, BaseActivity activity) {
@@ -34,6 +38,8 @@ public class LoginView implements LoginContract.WelcomeView {
         editTextLogin = root.findViewById(R.id.editTextLogin);
         editTextPassword = root.findViewById(R.id.editTextPassword);
         login = root.findViewById(R.id.buttonLogin);
+        progressBar = root.findViewById(R.id.progressBar);
+        viewGroup = root.findViewById(R.id.content);
 
     }
 
@@ -69,5 +75,21 @@ public class LoginView implements LoginContract.WelcomeView {
         return activity.getBaseContext();
     }
 
+    @Override
+    public void showMainLoader(boolean show) {
+        if (show) {
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            progressBar.setVisibility(View.GONE);
+        }
+    }
 
+    @Override
+    public void showUI(boolean show) {
+        if (show) {
+            viewGroup.setVisibility(View.VISIBLE);
+        } else {
+            viewGroup.setVisibility(View.GONE);
+        }
+    }
 }

@@ -18,7 +18,7 @@ import dmitriiserdun.gmail.com.musickiua.R;
 import dmitriiserdun.gmail.com.musickiua.base.Const;
 import dmitriiserdun.gmail.com.musickiua.base.player.SoundPlayer;
 import dmitriiserdun.gmail.com.musickiua.model.Sound;
-import dmitriiserdun.gmail.com.musickiua.storage.provider.ContractClass;
+import dmitriiserdun.gmail.com.musickiua.storage.base.DatabaseContract;
 import dmitriiserdun.gmail.com.musickiua.storage.provider.ConvertHelper;
 import rx.functions.Action1;
 
@@ -78,14 +78,14 @@ public class MediaPlayService extends Service {
             @Override
             public void onChange(boolean selfChangem, Uri uri) {
                 Cursor record = getBaseContext().getContentResolver().query(uri,
-                        ContractClass.Sounds.DEFAULT_PROJECTION,
+                        DatabaseContract.Sounds.DEFAULT_PROJECTION,
                         null, null,
                         null);
                 ArrayList<Sound> sounds = ConvertHelper.createSounds(record);
                 soundPlayer.putSounds(sounds);
             }
         };
-        getBaseContext().getContentResolver().registerContentObserver(ContractClass.Sounds.CONTENT_URI, true, ob);
+        getBaseContext().getContentResolver().registerContentObserver(DatabaseContract.Sounds.CONTENT_URI, true, ob);
 
     }
 
@@ -144,7 +144,7 @@ public class MediaPlayService extends Service {
         Log.d(TAG, "onStartCommand: CLEAR");
 
         getBaseContext().getContentResolver().delete(
-                ContractClass.Sounds.CONTENT_URI,
+                DatabaseContract.Sounds.CONTENT_URI,
                 null,
                 null);
         // soundPlayer.clear();
@@ -213,11 +213,14 @@ public class MediaPlayService extends Service {
 
     private ArrayList<Sound> getSound() {
         Cursor c = getBaseContext().getContentResolver().query(
-                ContractClass.Sounds.CONTENT_URI,
-                ContractClass.Sounds.DEFAULT_PROJECTION,
+                DatabaseContract.Sounds.CONTENT_URI,
+                DatabaseContract.Sounds.DEFAULT_PROJECTION,
                 null, null,
                 null);
         ArrayList<Sound> sounds = ConvertHelper.createSounds(c);
+
+        Log.d("position", "service: " + sounds);
+
 
         return sounds;
     }

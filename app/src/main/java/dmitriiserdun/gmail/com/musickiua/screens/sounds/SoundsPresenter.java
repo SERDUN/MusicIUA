@@ -38,7 +38,6 @@ public class SoundsPresenter implements SoundsContract.Presenter {
         album_id = stringExtra;
         managerSoundPlayer = ManagerSoundPlayer.getInstance();
         initPlayer();
-
         loadSounds();
         initAction();
     }
@@ -76,6 +75,9 @@ public class SoundsPresenter implements SoundsContract.Presenter {
         soundManagerRepository.getSounds(userId, album_id).subscribe(new Action1<List<Sound>>() {
             @Override
             public void call(List<Sound> sounds) {
+                managerSoundPlayer.deleteTemporarySound();
+                Log.d("position", "sounds presenter: " + sounds);
+
                 view.addPlayListsInList((ArrayList<Sound>) sounds);
                 managerSoundPlayer.initSounds(view.getContext(), (ArrayList<Sound>) sounds);
 

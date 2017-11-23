@@ -40,8 +40,9 @@ public class SoundPlayer implements OnCompletionListener, MediaPlayer.OnPrepared
     }
 
     public void play(int position) {
+        Log.d("position", "play: " + position);
         if (sounds != null) {
-            currentSoundPosition=position;
+            currentSoundPosition = position;
             preparePlayer();
             perform(sounds, position);
         }
@@ -59,6 +60,10 @@ public class SoundPlayer implements OnCompletionListener, MediaPlayer.OnPrepared
     }
 
     public void perform(ArrayList<Sound> sounds, int position) {
+        Sound current = sounds.get(position);
+        Log.d("position", "play: " + current.getName());
+
+
         MediaPlayer mediaPlayer = proxyMediaPlayer.play(sounds.get(position));
         mediaPlayer.setOnCompletionListener(this);
         mediaPlayer.setOnPreparedListener(this);
@@ -148,7 +153,10 @@ public class SoundPlayer implements OnCompletionListener, MediaPlayer.OnPrepared
     }
 
     public void setSounds(ArrayList<Sound> sounds) {
-        this.sounds = sounds;
+        Log.d("position", "play arr: " + sounds.toString());
+        this.sounds.clear();
+        this.sounds.addAll(sounds);
+        currentSoundPosition=0;
     }
 
     public void putSounds(ArrayList<Sound> sounds) {
@@ -174,7 +182,7 @@ public class SoundPlayer implements OnCompletionListener, MediaPlayer.OnPrepared
         public MediaPlayer play(Sound sound) {
             mediaPlayer = new MediaPlayer();
             String url = "http://" + sound.getUrl();
-            HttpProxyCacheServer proxy = App.getProxy(App.getInstance(),sound.getName());
+            HttpProxyCacheServer proxy = App.getProxy(App.getInstance(), sound.getName());
             String proxyUrl = proxy.getProxyUrl(url);
 
             try {

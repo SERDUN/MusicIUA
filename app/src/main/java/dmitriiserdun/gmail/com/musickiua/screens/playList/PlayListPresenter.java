@@ -28,8 +28,11 @@ public class PlayListPresenter implements PlayListContract.Presenter {
     public PlayListPresenter(final BaseFragment baseFragment, final PlayListContract.View view) {
         this.view = view;
         this.baseFragment = baseFragment;
+
         soundManagerRepository = SoundManagerRepository.getInstance(RemoteSoundRepository.getInstance());
+
         final Integer userId = Hawk.get(Const.USER_ID);
+
         soundManagerRepository.getPlaylists(userId).subscribe(new Action1<List<Playlist>>() {
             @Override
             public void call(List<Playlist> playlists) {

@@ -6,18 +6,30 @@ import java.io.Serializable;
  * Created by dmitro on 15.11.17.
  */
 
-public class Sound implements Serializable{
+public class Sound implements Serializable {
     private String name;
     private String author;
+    private String soundId;
     private String time;
     private int timeMilis;
     private String url;
 
-    public Sound(String name, String author, String time, String url) {
+
+
+    public Sound(String name, String author, String soundId, String time, String url) {
         this.name = name;
         this.author = author;
+        this.soundId = soundId;
         this.time = time;
         this.url = url;
+    }
+
+    public String getSoundId() {
+        return soundId;
+    }
+
+    public void setSoundId(String soundId) {
+        this.soundId = soundId;
     }
 
     public int getTimeMilis() {
@@ -80,5 +92,12 @@ public class Sound implements Serializable{
         result = 31 * result + (time != null ? time.hashCode() : 0);
         result = 31 * result + (url != null ? url.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "\n Sound{" +
+                "name='" + name + '\'' +
+                '}';
     }
 }

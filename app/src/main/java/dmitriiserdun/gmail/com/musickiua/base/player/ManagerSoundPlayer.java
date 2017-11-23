@@ -1,14 +1,16 @@
 package dmitriiserdun.gmail.com.musickiua.base.player;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import java.util.ArrayList;
 
 import dmitriiserdun.gmail.com.musickiua.base.App;
 import dmitriiserdun.gmail.com.musickiua.model.Sound;
 import dmitriiserdun.gmail.com.musickiua.services.MediaPlayService;
-import dmitriiserdun.gmail.com.musickiua.storage.provider.ContractClass;
+import dmitriiserdun.gmail.com.musickiua.storage.base.DatabaseContract;
 import dmitriiserdun.gmail.com.musickiua.storage.provider.ConvertHelper;
 
 /**
@@ -37,8 +39,6 @@ public class ManagerSoundPlayer implements ControlPlayer {
 
     public void selectAndPlaySound(Context context, int position) {
         Intent intent = new Intent(context, MediaPlayService.class);
-        lastClicedPosition = position;
-
         intent.putExtra(MediaPlayService.DataSourceController.IS_LIST, true);
         intent.putExtra(MediaPlayService.DataSourceController.KEY, MediaPlayService.DataSourceController.LOAD);
         intent.putExtra(MediaPlayService.PlayController.KEY, MediaPlayService.PlayController.PLAY);
@@ -55,8 +55,16 @@ public class ManagerSoundPlayer implements ControlPlayer {
 
 
     public void initSounds(Context context, ArrayList<Sound> sounds) {
-        for (Sound sound : sounds)
-            App.getInstance().getContentResolver().insert(ContractClass.Sounds.CONTENT_URI, ConvertHelper.createContentValues(sound));
+        Log.d("position", "manager: " + sounds);
+
+//        for (Sound sound : sounds) {
+//           //  Log.d("position", "forr: " + sound);
+//                App.getInstance().getContentResolver().insert(DatabaseContract.Sounds.CONTENT_URI, ConvertHelper.createContentValue(sound));
+//
+//        }
+
+        ContentValues[] contentValues = ConvertHelper.createContentValues(sounds);
+        App.getInstance().getContentResolver().bulkInsert(DatabaseContract.Sounds.CONTENT_URI, contentValues);
 
         Intent intent = new Intent(context, MediaPlayService.class);
         intent.putExtra(MediaPlayService.DataSourceController.KEY, MediaPlayService.DataSourceController.LOAD);
@@ -112,9 +120,9 @@ public class ManagerSoundPlayer implements ControlPlayer {
     }
 
     public void updateViewPlayer() {
-            Intent intent = new Intent(App.getInstance(), MediaPlayService.class);
-            intent.putExtra(MediaPlayService.DataSourceController.KEY, MediaPlayService.DataSourceController.UPDATE_VIEW_PLAYER);
-            App.getInstance().startService(intent);
+        Intent intent = new Intent(App.getInstance(), MediaPlayService.class);
+        intent.putExtra(MediaPlayService.DataSourceController.KEY, MediaPlayService.DataSourceController.UPDATE_VIEW_PLAYER);
+        App.getInstance().startService(intent);
 
 
     }
