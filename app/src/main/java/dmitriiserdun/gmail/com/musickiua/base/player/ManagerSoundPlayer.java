@@ -55,14 +55,6 @@ public class ManagerSoundPlayer implements ControlPlayer {
 
 
     public void initSounds(Context context, ArrayList<Sound> sounds) {
-        Log.d("position", "manager: " + sounds);
-
-//        for (Sound sound : sounds) {
-//           //  Log.d("position", "forr: " + sound);
-//                App.getInstance().getContentResolver().insert(DatabaseContract.Sounds.CONTENT_URI, ConvertHelper.createContentValue(sound));
-//
-//        }
-
         ContentValues[] contentValues = ConvertHelper.createContentValues(sounds);
         App.getInstance().getContentResolver().bulkInsert(DatabaseContract.Sounds.CONTENT_URI, contentValues);
 
