@@ -2,7 +2,6 @@ package dmitriiserdun.gmail.com.musickiua.base;
 
 import android.app.Application;
 import android.content.Context;
-import android.net.Uri;
 import android.support.multidex.MultiDex;
 
 import com.danikula.videocache.HttpProxyCacheServer;
