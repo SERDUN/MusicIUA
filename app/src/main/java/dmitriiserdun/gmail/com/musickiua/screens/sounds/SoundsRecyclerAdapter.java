@@ -70,7 +70,7 @@ public class SoundsRecyclerAdapter extends RecyclerView.Adapter<SoundsRecyclerAd
         public TextView name;
         private TextView author;
         private TextView time;
-        private LinearLayoutCompat conteiner;
+      //  private LinearLayoutCompat conteiner;
 //
 
         public ChannelHolder(View itemView) {
@@ -88,23 +88,23 @@ public class SoundsRecyclerAdapter extends RecyclerView.Adapter<SoundsRecyclerAd
             name = itemView.findViewById(R.id.soundNameTextView);
             author = itemView.findViewById(R.id.authorTextView);
             time = itemView.findViewById(R.id.timeTextView);
-            conteiner = itemView.findViewById(R.id.itemRv);
+           // conteiner = itemView.findViewById(R.id.itemRv);
 
         }
 
         public void bindView(Sound message) {
             if (selectedItem == message.hashCode()) {
-                conteiner.setBackgroundColor(App.getInstance().getResources().getColor(R.color.selectedAudio));
+               // conteiner.setBackgroundColor(App.getInstance().getResources().getColor(R.color.selectedAudio));
             } else {
-                conteiner.setBackgroundColor(App.getInstance().getResources().getColor(R.color.white));
+               // conteiner.setBackgroundColor(App.getInstance().getResources().getColor(R.color.white));
             }
             name.setText(message.getName());
             author.setText(message.getAuthor());
             time.setText(message.getTime());
             if (getAdapterPosition() == sounds.size() - 1) {
-                itemView.setPadding(0, 0, 0, 130);
+                author.setPadding(0, 0, 0, 240);
             } else {
-                itemView.setPadding(0, 0, 0, 5);
+                author.setPadding(0, 0, 0, 5);
 
             }
 

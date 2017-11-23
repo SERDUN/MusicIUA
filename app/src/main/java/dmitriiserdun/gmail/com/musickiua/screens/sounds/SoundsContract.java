@@ -22,6 +22,7 @@ public class SoundsContract {
 
     interface View extends BaseView<Presenter> {
         public void initControllerWithPlayer(ControlPlayer controlPlayer);
+        public void showPlayer(boolean isShow);
 
         public void addPlayListsInList(ArrayList<Sound> sounds);
 

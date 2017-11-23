@@ -85,4 +85,12 @@ public class SoundsView implements SoundsContract.View {
         sPlayerView.initController(controlPlayer);
     }
 
+    @Override
+    public void showPlayer(boolean isShow) {
+        if (isShow) {
+            sPlayerView.setVisibility(View.VISIBLE);
+        } else {
+            sPlayerView.setVisibility(View.GONE);
+        }
+    }
 }

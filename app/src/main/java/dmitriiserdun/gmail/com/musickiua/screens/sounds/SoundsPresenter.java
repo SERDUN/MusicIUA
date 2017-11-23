@@ -44,12 +44,14 @@ public class SoundsPresenter implements SoundsContract.Presenter {
     }
 
     private void initPlayer() {
+        view.showPlayer(false);
         managerSoundPlayer = ManagerSoundPlayer.getInstance();
         view.initControllerWithPlayer(managerSoundPlayer.getController());
         managerSoundPlayer.updateViewPlayer();
-     //   view.initControllerWithPlayer(managerSoundPlayer.getController());
+        //   view.initControllerWithPlayer(managerSoundPlayer.getController());
 
     }
+
     private void initAction() {
 
 
@@ -57,7 +59,7 @@ public class SoundsPresenter implements SoundsContract.Presenter {
             @Override
             public void call(Sound sound, Integer position) {
                 managerSoundPlayer.selectAndPlaySound(view.getContext(), position);
-
+                view.showPlayer(true);
 
             }
         });
@@ -65,7 +67,6 @@ public class SoundsPresenter implements SoundsContract.Presenter {
     }
 
     public void initSoundManagerListener() {
-
 
 
     }
