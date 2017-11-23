@@ -169,9 +169,9 @@ public class TopSongsView implements TopSongsContract.View {
     @Override
     public void showPlayer(boolean isShow) {
         if (isShow) {
-            //      containerPlayer.setVisibility(View.VISIBLE);
+            sPlayerView.setVisibility(View.VISIBLE);
         } else {
-            //    containerPlayer.setVisibility(View.GONE);
+            sPlayerView.setVisibility(View.GONE);
         }
     }
 

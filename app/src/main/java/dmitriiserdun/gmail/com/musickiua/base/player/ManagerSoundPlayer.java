@@ -106,10 +106,16 @@ public class ManagerSoundPlayer implements ControlPlayer {
     }
 
     public void deleteTemporarySound() {
-
         Intent intent = new Intent(App.getInstance(), MediaPlayService.class);
         intent.putExtra(MediaPlayService.DataSourceController.KEY, MediaPlayService.DataSourceController.CLEAR_LIST_IN_DATABASE);
         App.getInstance().startService(intent);
+    }
+
+    public void updateViewPlayer() {
+            Intent intent = new Intent(App.getInstance(), MediaPlayService.class);
+            intent.putExtra(MediaPlayService.DataSourceController.KEY, MediaPlayService.DataSourceController.UPDATE_VIEW_PLAYER);
+            App.getInstance().startService(intent);
+
 
     }
 

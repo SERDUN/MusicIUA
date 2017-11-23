@@ -27,16 +27,39 @@ public class TopSongsPresenter implements TopSongsContract.Presenter {
     public TopSongsPresenter(final TopSongsContract.View view, BaseFragment baseFragment) {
         this.view = view;
         this.baseFragment = baseFragment;
-        soundManagerRepository = SoundManagerRepository.getInstance(RemoteSoundRepository.getInstance());
+        init();
         initCallbacks();
         initPlayer();
-
+        getLoadTopSounds();
 
     }
+
+    private void init() {
+        soundManagerRepository = SoundManagerRepository.getInstance(RemoteSoundRepository.getInstance());
+        view.showPlayer(false);
+    }
+
+
+    public void getLoadTopSounds() {
+        managerSoundPlayer.deleteTemporarySound();
+        view.showMainLoader(true);
+        view.showUI(false);
+        soundManagerRepository.searchSounds("", 0).subscribe(new Action1<FoundSounds>() {
+            @Override
+            public void call(FoundSounds foundSounds) {
+                view.addSoundsList(foundSounds.getSounds());
+                view.showMainLoader(false);
+                view.showUI(true);
+                managerSoundPlayer.initSounds(view.getContext(), foundSounds.getSounds());
+            }
+        });
+    }
+
 
     private void initPlayer() {
         managerSoundPlayer = ManagerSoundPlayer.getInstance();
         view.initControllerWithPlayer(managerSoundPlayer.getController());
+        managerSoundPlayer.updateViewPlayer();
     }
 
     @Override
