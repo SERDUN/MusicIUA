@@ -32,6 +32,9 @@ public class MediaPlayService extends Service {
     private boolean statePlay = false;
     private Sound currentSound;
 
+    public final static String STATUS = "status";
+    public final static String SOUND_LOADED_STATUS = "sound_loaded_status";
+
 
     public static class PlayController {
         public static String KEY = "play_controller";
@@ -74,18 +77,19 @@ public class MediaPlayService extends Service {
     }
 
     private void handleTmpSounds() {
-        ContentObserver ob = new ContentObserver(new Handler(Looper.getMainLooper())) {
-            @Override
-            public void onChange(boolean selfChangem, Uri uri) {
-                Cursor record = getBaseContext().getContentResolver().query(uri,
-                        DatabaseContract.Sounds.DEFAULT_PROJECTION,
-                        null, null,
-                        null);
-                ArrayList<Sound> sounds = ConvertHelper.createSounds(record);
-                soundPlayer.putSounds(sounds);
-            }
-        };
-        getBaseContext().getContentResolver().registerContentObserver(DatabaseContract.Sounds.CONTENT_URI, true, ob);
+
+//        ContentObserver ob = new ContentObserver(new Handler(Looper.getMainLooper())) {
+//            @Override
+//            public void onChange(boolean selfChangem, Uri uri) {
+//                Cursor record = getBaseContext().getContentResolver().query(uri,
+//                        DatabaseContract.Sounds.DEFAULT_PROJECTION,
+//                        null, null,
+//                        null);
+//                ArrayList<Sound> sounds = ConvertHelper.createSounds(record);
+//                soundPlayer.putSounds(sounds);
+//            }
+//        };
+       // getBaseContext().getContentResolver().registerContentObserver(DatabaseContract.Sounds.CONTENT_URI, true, ob);
 
     }
 
@@ -110,7 +114,7 @@ public class MediaPlayService extends Service {
                 clear();
                 break;
             case 3:
-                updateViewPlayer(currentSound);
+                updateViewPlayer(currentSound, true);
                 break;
         }
 
@@ -141,12 +145,6 @@ public class MediaPlayService extends Service {
     }
 
     private void clear() {
-        Log.d(TAG, "onStartCommand: CLEAR");
-
-        getBaseContext().getContentResolver().delete(
-                DatabaseContract.Sounds.CONTENT_URI,
-                null,
-                null);
         // soundPlayer.clear();
     }
 
@@ -181,7 +179,7 @@ public class MediaPlayService extends Service {
     public void updateStateViewController() {
         Intent intent = new Intent(Const.BROADCAST_ACTION);
         intent.putExtra("statePlay", statePlay);
-        intent.putExtra("status", "buttonState");
+        intent.putExtra(STATUS, "buttonState");
         getBaseContext().sendBroadcast(intent);
 
     }
@@ -190,23 +188,32 @@ public class MediaPlayService extends Service {
 
         handler.removeCallbacks(timePositionCursor);
         handler.postDelayed(timePositionCursor, 50);
-        soundPlayer.soundPublishSubject.subscribe(new Action1<Sound>() {
+        soundPlayer.startPreparedAction.subscribe(new Action1<Sound>() {
+            @Override
+            public void call(Sound sound) {
+                updateViewPlayer(sound, false);
+
+            }
+        });
+
+
+        soundPlayer.finishedPreparedAction.subscribe(new Action1<Sound>() {
             @Override
             public void call(Sound sound) {
                 MediaPlayService.this.currentSound = sound;
-                updateViewPlayer(sound);
+                updateViewPlayer(sound, true);
 
             }
         });
 
     }
 
-    private void updateViewPlayer(Sound sound) {
-        if (currentSound != null) {
-            Log.d(TAG, "onStartCommand: SUBSCRIBE------------------: " + sound.getName());
+    private void updateViewPlayer(Sound sound, boolean soundLoaded) {
+        if(currentSound!=null) {
             Intent intent = new Intent(Const.BROADCAST_ACTION);
-            intent.putExtra("status", "sound_data");
+            intent.putExtra(STATUS, "sound_data");
             intent.putExtra("sound", sound);
+            intent.putExtra(SOUND_LOADED_STATUS, soundLoaded);
             getBaseContext().sendBroadcast(intent);
         }
     }
@@ -218,8 +225,7 @@ public class MediaPlayService extends Service {
                 null, null,
                 null);
         ArrayList<Sound> sounds = ConvertHelper.createSounds(c);
-
-        Log.d("position", "service: " + sounds);
+        Log.d("empty_arr", "getSound: "+sounds);
 
 
         return sounds;

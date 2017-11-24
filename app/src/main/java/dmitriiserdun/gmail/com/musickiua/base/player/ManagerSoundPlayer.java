@@ -3,7 +3,10 @@ package dmitriiserdun.gmail.com.musickiua.base.player;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
+import android.database.ContentObserver;
+import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 
 import java.util.ArrayList;
 
@@ -27,6 +30,7 @@ public class ManagerSoundPlayer implements ControlPlayer {
         return ourInstance;
     }
 
+    public ContentObserver observableSounds;
 
     private ManagerSoundPlayer() {
     }
@@ -54,14 +58,27 @@ public class ManagerSoundPlayer implements ControlPlayer {
     }
 
 
-    public void initSounds(Context context, ArrayList<Sound> sounds) {
+    public void initSounds(final Context context, ArrayList<Sound> sounds) {
         ContentValues[] contentValues = ConvertHelper.createContentValues(sounds);
         App.getInstance().getContentResolver().bulkInsert(DatabaseContract.Sounds.CONTENT_URI, contentValues);
+        registerSoundObservable(context);
 
-        Intent intent = new Intent(context, MediaPlayService.class);
-        intent.putExtra(MediaPlayService.DataSourceController.KEY, MediaPlayService.DataSourceController.LOAD);
-        context.startService(intent);
+    }
 
+    private void registerSoundObservable(final Context context) {
+        if (observableSounds == null) {
+            observableSounds = new ContentObserver(new Handler(Looper.getMainLooper())) {
+                @Override
+                public void onChange(boolean selfChange, Uri uri) {
+                    Intent intent = new Intent(context, MediaPlayService.class);
+                    intent.putExtra(MediaPlayService.DataSourceController.KEY, MediaPlayService.DataSourceController.LOAD);
+                    context.startService(intent);
+                    context.getContentResolver().unregisterContentObserver(this);
+
+                }
+            };
+            context.getContentResolver().registerContentObserver(DatabaseContract.Sounds.CONTENT_URI, true, observableSounds);
+        }
     }
 
 
@@ -105,10 +122,14 @@ public class ManagerSoundPlayer implements ControlPlayer {
 
     }
 
-    public void deleteTemporarySound() {
-        Intent intent = new Intent(App.getInstance(), MediaPlayService.class);
-        intent.putExtra(MediaPlayService.DataSourceController.KEY, MediaPlayService.DataSourceController.CLEAR_LIST_IN_DATABASE);
-        App.getInstance().startService(intent);
+    public void deleteTemporarySound(Context context) {
+//        Intent intent = new Intent(App.getInstance(), MediaPlayService.class);
+//        intent.putExtra(MediaPlayService.DataSourceController.KEY, MediaPlayService.DataSourceController.CLEAR_LIST_IN_DATABASE);
+//        App.getInstance().startService(intent);
+        context.getContentResolver().delete(
+                DatabaseContract.Sounds.CONTENT_URI,
+                null,
+                null);
     }
 
     public void updateViewPlayer() {

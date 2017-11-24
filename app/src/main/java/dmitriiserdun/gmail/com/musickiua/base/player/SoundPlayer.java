@@ -23,12 +23,14 @@ public class SoundPlayer implements OnCompletionListener, MediaPlayer.OnPrepared
     private ProxyMediaPlayer proxyMediaPlayer;
     private int currentSoundPosition = 0;
     private ArrayList<Sound> sounds;
-    public PublishSubject<Sound> soundPublishSubject;
+    public PublishSubject<Sound> finishedPreparedAction;
+    public PublishSubject<Sound> startPreparedAction;
 
     private SoundPlayer() {
         proxyMediaPlayer = new ProxyMediaPlayer();
         sounds = new ArrayList<>();
-        soundPublishSubject = PublishSubject.create();
+        finishedPreparedAction = PublishSubject.create();
+        startPreparedAction = PublishSubject.create();
     }
 
     public static SoundPlayer getInstance() {
@@ -63,7 +65,9 @@ public class SoundPlayer implements OnCompletionListener, MediaPlayer.OnPrepared
         Sound current = sounds.get(position);
         Log.d("position", "play: " + current.getName());
 
-
+        Log.d("position", "play: " + sounds);
+        startPreparedAction.onNext(current);
+        startPreparedAction.publish();
         MediaPlayer mediaPlayer = proxyMediaPlayer.play(sounds.get(position));
         mediaPlayer.setOnCompletionListener(this);
         mediaPlayer.setOnPreparedListener(this);
@@ -100,8 +104,8 @@ public class SoundPlayer implements OnCompletionListener, MediaPlayer.OnPrepared
         Log.d(TAG, "onPrepared: ttt");
         Sound current = sounds.get(currentSoundPosition);
         current.setTimeMilis(mp.getDuration());
-        soundPublishSubject.onNext(sounds.get(currentSoundPosition));
-        soundPublishSubject.publish();
+        finishedPreparedAction.onNext(current);
+        finishedPreparedAction.publish();
         proxyMediaPlayer.play();
 
     }
@@ -159,9 +163,9 @@ public class SoundPlayer implements OnCompletionListener, MediaPlayer.OnPrepared
         currentSoundPosition=0;
     }
 
-    public void putSounds(ArrayList<Sound> sounds) {
-        this.sounds.addAll(sounds);
-    }
+//    public void putSounds(ArrayList<Sound> sounds) {
+//        this.sounds.addAll(sounds);
+//    }
 
     public void clear() {
         sounds.clear();

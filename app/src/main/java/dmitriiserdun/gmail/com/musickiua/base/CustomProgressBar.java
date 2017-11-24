@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -17,6 +18,7 @@ import dmitriiserdun.gmail.com.musickiua.R;
  */
 
 public class CustomProgressBar extends FrameLayout {
+
     private View rootView;
 
     private ClipDrawable inLeft;
@@ -36,6 +38,8 @@ public class CustomProgressBar extends FrameLayout {
     private Handler mLeftHandler = new Handler();
 
 
+    private ViewGroup viewGroup;
+
     ImageView leftImg;
     ImageView rightImg;
 
@@ -51,8 +55,8 @@ public class CustomProgressBar extends FrameLayout {
 
     private void init(Context context) {
         toLevel = (100 * MAX_LEVEL) / 100;
-
         rootView = inflate(context, R.layout.custom_progress_bar, this);
+        viewGroup = rootView.findViewById(R.id.container);
         leftImg = rootView.findViewById(R.id.imageView1);
         inLeft = (ClipDrawable) leftImg.getDrawable();
         inLeft.setLevel(0);
@@ -118,4 +122,8 @@ public class CustomProgressBar extends FrameLayout {
             doTheLeftAnimation(fromLevel, toLevel);
         }
     };
+
+    public void setVisibility(int status) {
+        super.setVisibility(status);
+    }
 }
