@@ -14,4 +14,9 @@
     <string name="my_playlists">My playlists</string>
     <string name="my_songs">My songs</string>
     <string name="top_songs">Top songs</string>
+
+    <string name="cd_repeat">Repeat one or all</string>
+    <string name="cd_previous">Skip backwards</string>
+    <string name="cd_play">Play and pause</string>
+    <string name="cd_next">Skip forwards</string>
 </resources>

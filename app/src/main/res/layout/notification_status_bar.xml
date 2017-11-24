@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/status_bar_button_info_container_padding_left">
+
+        <TextView
+            android:id="@+id/status_bar_track_name"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="ddfdfdddddddddddd"
+            android:textColor="@color/mb_blue"
+            android:textSize="@dimen/text_size_medium"
+            android:textStyle="bold" />
+
+
+        <ImageView
+            android:id="@+id/status_bar_icon"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/status_bar_album_art"
+            android:background="@drawable/status_bg"
+            android:scaleType="center"
+            android:src="@drawable/ic_launcher_background"
+            android:visibility="gone" />
+
+        <ImageButton
+            android:id="@+id/status_bar_collapse"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_arrow_back_black_24dp"
+            android:visibility="gone" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/status_bar_prev"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/cd_repeat"
+            android:src="@drawable/ic_chevron_left_black_24dp" />
+
+        <ImageButton
+            android:id="@+id/status_bar_play"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/cd_play"
+            android:src="@drawable/ic_play_arrow_black_24dp" />
+
+        <ImageButton
+            android:id="@+id/status_bar_next"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/cd_next"
+            android:src="@drawable/ic_chevron_right_black_24dp" />
+    </LinearLayout>
+
+</LinearLayout>
