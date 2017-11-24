@@ -23,16 +23,19 @@ import dmitriiserdun.gmail.com.musickiua.storage.provider.ConvertHelper;
 
 public class ManagerSoundPlayer implements ControlPlayer {
 
-    public boolean showedNotification = false;
-    private static final ManagerSoundPlayer ourInstance = new ManagerSoundPlayer();
+    public boolean showingNotification = false;
+    private static ManagerSoundPlayer ourInstance;
+    private int lastClickedPosition = 0;
+    public ContentObserver observableSounds;
 
-    private int lastClicedPosition = 0;
 
     public static ManagerSoundPlayer getInstance() {
+        if (ourInstance == null) {
+            ourInstance = new ManagerSoundPlayer();
+        }
         return ourInstance;
     }
 
-    public ContentObserver observableSounds;
 
     private ManagerSoundPlayer() {
     }
@@ -46,12 +49,12 @@ public class ManagerSoundPlayer implements ControlPlayer {
     public void selectAndPlaySound(Context context, int position) {
 
         Intent intent = new Intent(context, MediaPlayService.class);
-        intent.putExtra(MediaPlayService.DataSourceController.IS_LIST, true);
-        intent.putExtra(MediaPlayService.DataSourceController.KEY, MediaPlayService.DataSourceController.LOAD);
+        intent.putExtra(MediaPlayService.PlayController.IS_LIST, true);
+        intent.putExtra(MediaPlayService.PlayController.LOAD, true);
         intent.putExtra(MediaPlayService.PlayController.KEY, MediaPlayService.PlayController.PLAY);
-        intent.putExtra(MediaPlayService.DataSourceController.POSITION, position);
-        if (!showedNotification) {
-            showedNotification = true;
+        intent.putExtra(MediaPlayService.PlayController.POSITION, position);
+        if (!showingNotification) {
+            showingNotification = true;
             intent.setAction(Const.ACTION.STARTFOREGROUND_ACTION);
         }
         context.startService(intent);
@@ -78,7 +81,7 @@ public class ManagerSoundPlayer implements ControlPlayer {
                 @Override
                 public void onChange(boolean selfChange, Uri uri) {
                     Intent intent = new Intent(context, MediaPlayService.class);
-                    intent.putExtra(MediaPlayService.DataSourceController.KEY, MediaPlayService.DataSourceController.LOAD);
+                    intent.putExtra(MediaPlayService.PlayController.LOAD, true);
                     context.startService(intent);
                     context.getContentResolver().unregisterContentObserver(this);
 
@@ -92,9 +95,9 @@ public class ManagerSoundPlayer implements ControlPlayer {
     @Override
     public void startOrPause() {
         Intent intent = new Intent(App.getInstance(), MediaPlayService.class);
-        intent.putExtra(MediaPlayService.DataSourceController.IS_LIST, false);
+        intent.putExtra(MediaPlayService.PlayController.IS_LIST, false);
         intent.putExtra(MediaPlayService.PlayController.KEY, MediaPlayService.PlayController.PLAY);
-        intent.putExtra(MediaPlayService.DataSourceController.POSITION, lastClicedPosition);
+        intent.putExtra(MediaPlayService.PlayController.POSITION, lastClickedPosition);
 
         App.getInstance().startService(intent);
     }
@@ -141,7 +144,7 @@ public class ManagerSoundPlayer implements ControlPlayer {
 
     public void updateViewPlayer() {
         Intent intent = new Intent(App.getInstance(), MediaPlayService.class);
-        intent.putExtra(MediaPlayService.DataSourceController.KEY, MediaPlayService.DataSourceController.UPDATE_VIEW_PLAYER);
+        intent.putExtra(MediaPlayService.PlayController.KEY, MediaPlayService.PlayController.UPDATE_VIEW_PLAYER);
         App.getInstance().startService(intent);
 
 

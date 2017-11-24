@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -115,6 +116,7 @@ public class SPlayerView extends LinearLayout {
                 }
 
                 if (status.equals("seek_data")) {
+                    Log.d("dfdfdf", "onReceive: "+intent.getIntExtra("currentSeekTime", 0));
                     handleSeekBar(intent.getIntExtra("currentSeekTime", 0));
                 }
             }

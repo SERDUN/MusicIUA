@@ -4,17 +4,12 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.database.ContentObserver;
 import android.database.Cursor;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -49,12 +44,9 @@ public class MediaPlayService extends Service {
         public static int PLAY = 1;
         public static int NEXT = 5;
         public static int BACK = 6;
-    }
+        public static String LOAD = "load_sound_with_database";
 
-    public static class DataSourceController {
-        public static String KEY = "data_source_controller";
         public static String POSITION = "position";
-        public static int LOAD = 1;
         public static String IS_LIST = "is_list";
         public static int UPDATE_VIEW_PLAYER = 3;
     }
@@ -62,16 +54,7 @@ public class MediaPlayService extends Service {
 
     @Override
     public void onCreate() {
-//        timePositionCursor = new TimePositionCursor();
-//
-//        Notification.Builder builder = new Notification.Builder(this)
-//                .setSmallIcon(R.drawable.ic_play_circle_filled_black_24dp);
-//        Notification notification;
-//        if (Build.VERSION.SDK_INT < 16)
-//            notification = builder.getNotification();
-//        else
-//            notification = builder.build();
-//        startForeground(777, notification);
+
         soundPlayer = SoundPlayer.getInstance();
         initSubscribe();
         super.onCreate();
@@ -91,7 +74,7 @@ public class MediaPlayService extends Service {
         String act = intent.getAction();
         if (act != null) {
             if (intent.getAction().equals(Const.ACTION.STARTFOREGROUND_ACTION)) {
-                 showNotification();
+                showNotification();
                 Log.i(LOG_TAG, "notification  Started");
 
             } else if (intent.getAction().equals(Const.ACTION.PREV_ACTION)) {
@@ -179,8 +162,6 @@ public class MediaPlayService extends Service {
         bigViews.setTextViewText(R.id.status_bar_album_name, "Album Name");
 
 
-
-
         status = new Notification.Builder(this).build();
         status.contentView = views;
         status.bigContentView = bigViews;
@@ -193,19 +174,11 @@ public class MediaPlayService extends Service {
 
     private void handleViewPlayerEvents(Intent intent) {
         int keyPlaying = intent.getIntExtra(PlayController.KEY, -1);
-        int keyDataSource = intent.getIntExtra(DataSourceController.KEY, -1);
+        boolean loadData = intent.getBooleanExtra(PlayController.LOAD, true);
 
-        switch (keyDataSource) {
-            case 1:
-                Log.d(TAG, "onStartCommand: LOAD DATA");
-                soundPlayer = SoundPlayer.getInstance();
-                soundPlayer.setSounds(getSound());
-                break;
-            case 2:
-                break;
-            case 3:
-                updateViewPlayer(currentSound, true);
-                break;
+        if (loadData) {
+            soundPlayer = SoundPlayer.getInstance();
+            soundPlayer.setSounds(getSound());
         }
 
         switch (keyPlaying) {
@@ -232,10 +205,10 @@ public class MediaPlayService extends Service {
 
 
     private void handleClickPlay(Intent intent) {
-        int position = intent.getIntExtra(DataSourceController.POSITION, 0);
+        int position = intent.getIntExtra(PlayController.POSITION, 0);
         Log.d(TAG, "onStartCommand: CURRENT_POSITION: " + position);
         int ff = soundPlayer.getCurrentSoundPosition();
-        boolean isList = intent.getBooleanExtra(DataSourceController.IS_LIST, false);
+        boolean isList = intent.getBooleanExtra(PlayController.IS_LIST, false);
 
         if (soundPlayer.isPlayingSound() && !isList) {
             soundPlayer.pause();
@@ -264,8 +237,11 @@ public class MediaPlayService extends Service {
     }
 
     private void initSubscribe() {
+        timePositionCursor=new TimePositionCursor();
         handler.removeCallbacks(timePositionCursor);
+
         handler.postDelayed(timePositionCursor, 50);
+
         soundPlayer.startPreparedAction.subscribe(new Action1<Sound>() {
             @Override
             public void call(Sound sound) {
@@ -313,8 +289,8 @@ public class MediaPlayService extends Service {
         public void run() {
 
             Intent intent = new Intent(Const.BROADCAST_ACTION);
-            intent.putExtra("currentSeekTime", soundPlayer.getCurrentTimePosition());
             intent.putExtra("status", "seek_data");
+            intent.putExtra("currentSeekTime", soundPlayer.getCurrentTimePosition());
 
             getBaseContext().sendBroadcast(intent);
             handler.postDelayed(timePositionCursor, 50);
