@@ -79,10 +79,15 @@ public class MediaPlayService extends Service {
 
             } else if (intent.getAction().equals(Const.ACTION.PREV_ACTION)) {
                 Log.i(LOG_TAG, "Clicked Previous");
+                soundPlayer.backSound();
             } else if (intent.getAction().equals(Const.ACTION.PLAY_ACTION)) {
                 Log.i(LOG_TAG, "Clicked Play");
+                handleClickPlay(intent);
+
             } else if (intent.getAction().equals(Const.ACTION.NEXT_ACTION)) {
                 Log.i(LOG_TAG, "Clicked Next");
+                soundPlayer.nextSound();
+
             } else if (intent.getAction().equals(
                     Const.ACTION.STOPFOREGROUND_ACTION)) {
                 Log.i(LOG_TAG, "Received Stop Foreground Intent");
@@ -96,13 +101,13 @@ public class MediaPlayService extends Service {
 
         RemoteViews views = new RemoteViews(getPackageName(), R.layout.notification_status_bar);
 
-        RemoteViews bigViews = new RemoteViews(getPackageName(), R.layout.notification_status_bar_expanded);
+        //   RemoteViews bigViews = new RemoteViews(getPackageName(), R.layout.notification_status_bar_expanded);
 
 
         views.setViewVisibility(R.id.status_bar_icon, View.VISIBLE);
         views.setViewVisibility(R.id.status_bar_album_art, View.GONE);
 
-        bigViews.setImageViewBitmap(R.id.status_bar_album_art, Const.getDefaultAlbumArt(this));
+        // bigViews.setImageViewBitmap(R.id.status_bar_album_art, Const.getDefaultAlbumArt(this));
 
 
         Intent notificationIntent = new Intent(this, NavActivity.class);
@@ -137,34 +142,34 @@ public class MediaPlayService extends Service {
 
 
         views.setOnClickPendingIntent(R.id.status_bar_play, pplayIntent);
-        bigViews.setOnClickPendingIntent(R.id.status_bar_play, pplayIntent);
+        //bigViews.setOnClickPendingIntent(R.id.status_bar_play, pplayIntent);
 
         views.setOnClickPendingIntent(R.id.status_bar_next, pnextIntent);
-        bigViews.setOnClickPendingIntent(R.id.status_bar_next, pnextIntent);
+        //bigViews.setOnClickPendingIntent(R.id.status_bar_next, pnextIntent);
         views.setOnClickPendingIntent(R.id.status_bar_prev, ppreviousIntent);
-        bigViews.setOnClickPendingIntent(R.id.status_bar_prev, ppreviousIntent);
+        // bigViews.setOnClickPendingIntent(R.id.status_bar_prev, ppreviousIntent);
 
         views.setOnClickPendingIntent(R.id.status_bar_collapse, pcloseIntent);
-        bigViews.setOnClickPendingIntent(R.id.status_bar_collapse, pcloseIntent);
+        // bigViews.setOnClickPendingIntent(R.id.status_bar_collapse, pcloseIntent);
 
         views.setImageViewResource(R.id.status_bar_play,
                 R.drawable.ic_pause_black_24dp);
 
-        bigViews.setImageViewResource(R.id.status_bar_play,
-                R.drawable.ic_pause_black_24dp);
+        //bigViews.setImageViewResource(R.id.status_bar_play,
+        //  R.drawable.ic_pause_black_24dp);
 
         views.setTextViewText(R.id.status_bar_track_name, "Song Title");
-        bigViews.setTextViewText(R.id.status_bar_track_name, "Song Title");
+        //bigViews.setTextViewText(R.id.status_bar_track_name, "Song Title");
 
         views.setTextViewText(R.id.status_bar_artist_name, "Artist Name");
-        bigViews.setTextViewText(R.id.status_bar_artist_name, "Artist Name");
+        //bigViews.setTextViewText(R.id.status_bar_artist_name, "Artist Name");
 
-        bigViews.setTextViewText(R.id.status_bar_album_name, "Album Name");
+        // bigViews.setTextViewText(R.id.status_bar_album_name, "Album Name");
 
 
         status = new Notification.Builder(this).build();
         status.contentView = views;
-        status.bigContentView = bigViews;
+        // status.bigContentView = bigViews;
         status.flags = Notification.FLAG_ONGOING_EVENT;
         status.icon = R.drawable.ic_launcher_background;
         status.contentIntent = pendingIntent;
@@ -174,7 +179,8 @@ public class MediaPlayService extends Service {
 
     private void handleViewPlayerEvents(Intent intent) {
         int keyPlaying = intent.getIntExtra(PlayController.KEY, -1);
-        boolean loadData = intent.getBooleanExtra(PlayController.LOAD, true);
+
+        boolean loadData = intent.getBooleanExtra(PlayController.LOAD, false);
 
         if (loadData) {
             soundPlayer = SoundPlayer.getInstance();
@@ -189,6 +195,7 @@ public class MediaPlayService extends Service {
             case 2:
                 break;
             case 3:
+                updateViewPlayer(currentSound, true);
                 break;
             case 4:
                 break;
@@ -207,7 +214,6 @@ public class MediaPlayService extends Service {
     private void handleClickPlay(Intent intent) {
         int position = intent.getIntExtra(PlayController.POSITION, 0);
         Log.d(TAG, "onStartCommand: CURRENT_POSITION: " + position);
-        int ff = soundPlayer.getCurrentSoundPosition();
         boolean isList = intent.getBooleanExtra(PlayController.IS_LIST, false);
 
         if (soundPlayer.isPlayingSound() && !isList) {
