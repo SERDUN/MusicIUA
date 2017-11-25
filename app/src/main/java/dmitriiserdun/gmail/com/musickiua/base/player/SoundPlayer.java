@@ -23,12 +23,14 @@ public class SoundPlayer implements OnCompletionListener, MediaPlayer.OnPrepared
     private ProxyMediaPlayer proxyMediaPlayer;
     private int currentSoundPosition = 0;
     private ArrayList<Sound> sounds;
-    public PublishSubject<Sound> soundPublishSubject;
+    public PublishSubject<Sound> finishedPreparedAction;
+    public PublishSubject<Sound> startPreparedAction;
 
     private SoundPlayer() {
         proxyMediaPlayer = new ProxyMediaPlayer();
         sounds = new ArrayList<>();
-        soundPublishSubject = PublishSubject.create();
+        finishedPreparedAction = PublishSubject.create();
+        startPreparedAction = PublishSubject.create();
     }
 
     public static SoundPlayer getInstance() {
@@ -40,8 +42,9 @@ public class SoundPlayer implements OnCompletionListener, MediaPlayer.OnPrepared
     }
 
     public void play(int position) {
+        Log.d("position", "play: " + position);
         if (sounds != null) {
-            currentSoundPosition=position;
+            currentSoundPosition = position;
             preparePlayer();
             perform(sounds, position);
         }
@@ -59,6 +62,12 @@ public class SoundPlayer implements OnCompletionListener, MediaPlayer.OnPrepared
     }
 
     public void perform(ArrayList<Sound> sounds, int position) {
+        Sound current = sounds.get(position);
+        Log.d("position", "play: " + current.getName());
+
+        Log.d("position", "play: " + sounds);
+        startPreparedAction.onNext(current);
+        startPreparedAction.publish();
         MediaPlayer mediaPlayer = proxyMediaPlayer.play(sounds.get(position));
         mediaPlayer.setOnCompletionListener(this);
         mediaPlayer.setOnPreparedListener(this);
@@ -95,8 +104,8 @@ public class SoundPlayer implements OnCompletionListener, MediaPlayer.OnPrepared
         Log.d(TAG, "onPrepared: ttt");
         Sound current = sounds.get(currentSoundPosition);
         current.setTimeMilis(mp.getDuration());
-        soundPublishSubject.onNext(sounds.get(currentSoundPosition));
-        soundPublishSubject.publish();
+        finishedPreparedAction.onNext(current);
+        finishedPreparedAction.publish();
         proxyMediaPlayer.play();
 
     }
@@ -148,12 +157,15 @@ public class SoundPlayer implements OnCompletionListener, MediaPlayer.OnPrepared
     }
 
     public void setSounds(ArrayList<Sound> sounds) {
-        this.sounds = sounds;
+        Log.d("position", "play arr: " + sounds.toString());
+        this.sounds.clear();
+        this.sounds.addAll(sounds);
+        currentSoundPosition=0;
     }
 
-    public void putSounds(ArrayList<Sound> sounds) {
-        this.sounds.addAll(sounds);
-    }
+//    public void putSounds(ArrayList<Sound> sounds) {
+//        this.sounds.addAll(sounds);
+//    }
 
     public void clear() {
         sounds.clear();
@@ -174,7 +186,7 @@ public class SoundPlayer implements OnCompletionListener, MediaPlayer.OnPrepared
         public MediaPlayer play(Sound sound) {
             mediaPlayer = new MediaPlayer();
             String url = "http://" + sound.getUrl();
-            HttpProxyCacheServer proxy = App.getProxy(App.getInstance(),sound.getName());
+            HttpProxyCacheServer proxy = App.getProxy(App.getInstance(), sound.getName());
             String proxyUrl = proxy.getProxyUrl(url);
 
             try {

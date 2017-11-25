@@ -41,7 +41,7 @@ public class TopSongsPresenter implements TopSongsContract.Presenter {
 
 
     public void getLoadTopSounds() {
-        managerSoundPlayer.deleteTemporarySound();
+        managerSoundPlayer.deleteTemporarySound(baseFragment.getContext());
         view.showMainLoader(true);
         view.showUI(false);
         soundManagerRepository.searchSounds("", 0).subscribe(new Action1<FoundSounds>() {
@@ -105,7 +105,7 @@ public class TopSongsPresenter implements TopSongsContract.Presenter {
     }
 
     public void findSound() {
-        managerSoundPlayer.deleteTemporarySound();
+        managerSoundPlayer.deleteTemporarySound(baseFragment.getContext());
         try {
             soundManagerRepository.searchSounds(URLEncoder.encode(searchingKey, "windows-1251"), 0).subscribe(new Action1<FoundSounds>() {
                 @Override

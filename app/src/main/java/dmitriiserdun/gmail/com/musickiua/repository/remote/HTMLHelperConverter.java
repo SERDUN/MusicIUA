@@ -44,8 +44,10 @@ public class HTMLHelperConverter {
             String soundName = element.select("a").get(1).text();
             String author = element.select("a").get(2).text();
             String time = element.select("td").get(5).text();
-            String urlSound = findRealSoundUrlInHtml(element.select("a").first().attr("href"));
-            sounds.add(new Sound(soundName, author, time, urlSound));
+            String soundId = element.select("a").first().attr("href").replaceFirst(".*/([^/?]+).*", "$1");
+            String urlSound = findRealSoundUrlInHtml(element.select("a").first().attr("href"), soundId);
+
+            sounds.add(new Sound(soundName, author, soundId,time, urlSound));
         }
         return sounds;
     }
@@ -85,9 +87,9 @@ public class HTMLHelperConverter {
         return foundSounds;
     }
 
-    private static String findRealSoundUrlInHtml(String path) {
+    private static String findRealSoundUrlInHtml(String path, String pathSound) {
 
-        String pathSound = path.replaceFirst(".*/([^/?]+).*", "$1");
+        //   String pathSound = path.replaceFirst(".*/([^/?]+).*", "$1");
 
         String url = "http://music.i.ua" + path;
         String finishUrl = null;

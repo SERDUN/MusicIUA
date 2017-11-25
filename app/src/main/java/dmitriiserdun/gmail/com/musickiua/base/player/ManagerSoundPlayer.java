@@ -1,14 +1,20 @@
 package dmitriiserdun.gmail.com.musickiua.base.player;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.ContentObserver;
+import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 
 import java.util.ArrayList;
 
 import dmitriiserdun.gmail.com.musickiua.base.App;
+import dmitriiserdun.gmail.com.musickiua.base.Const;
 import dmitriiserdun.gmail.com.musickiua.model.Sound;
 import dmitriiserdun.gmail.com.musickiua.services.MediaPlayService;
-import dmitriiserdun.gmail.com.musickiua.storage.provider.ContractClass;
+import dmitriiserdun.gmail.com.musickiua.storage.base.DatabaseContract;
 import dmitriiserdun.gmail.com.musickiua.storage.provider.ConvertHelper;
 
 /**
@@ -17,11 +23,16 @@ import dmitriiserdun.gmail.com.musickiua.storage.provider.ConvertHelper;
 
 public class ManagerSoundPlayer implements ControlPlayer {
 
-    private static final ManagerSoundPlayer ourInstance = new ManagerSoundPlayer();
+    public boolean showingNotification = false;
+    private static ManagerSoundPlayer ourInstance;
+    private int lastClickedPosition = 0;
+    public ContentObserver observableSounds;
 
-    private int lastClicedPosition = 0;
 
     public static ManagerSoundPlayer getInstance() {
+        if (ourInstance == null) {
+            ourInstance = new ManagerSoundPlayer();
+        }
         return ourInstance;
     }
 
@@ -36,13 +47,16 @@ public class ManagerSoundPlayer implements ControlPlayer {
 
 
     public void selectAndPlaySound(Context context, int position) {
-        Intent intent = new Intent(context, MediaPlayService.class);
-        lastClicedPosition = position;
 
-        intent.putExtra(MediaPlayService.DataSourceController.IS_LIST, true);
-        intent.putExtra(MediaPlayService.DataSourceController.KEY, MediaPlayService.DataSourceController.LOAD);
+        Intent intent = new Intent(context, MediaPlayService.class);
+        intent.putExtra(MediaPlayService.PlayController.IS_LIST, true);
+        intent.putExtra(MediaPlayService.PlayController.LOAD, true);
         intent.putExtra(MediaPlayService.PlayController.KEY, MediaPlayService.PlayController.PLAY);
-        intent.putExtra(MediaPlayService.DataSourceController.POSITION, position);
+        intent.putExtra(MediaPlayService.PlayController.POSITION, position);
+        if (!showingNotification) {
+            showingNotification = true;
+            intent.setAction(Const.ACTION.STARTFOREGROUND_ACTION);
+        }
         context.startService(intent);
     }
 
@@ -54,23 +68,36 @@ public class ManagerSoundPlayer implements ControlPlayer {
     }
 
 
-    public void initSounds(Context context, ArrayList<Sound> sounds) {
-        for (Sound sound : sounds)
-            App.getInstance().getContentResolver().insert(ContractClass.Sounds.CONTENT_URI, ConvertHelper.createContentValues(sound));
+    public void initSounds(final Context context, ArrayList<Sound> sounds) {
+        ContentValues[] contentValues = ConvertHelper.createContentValues(sounds);
+        App.getInstance().getContentResolver().bulkInsert(DatabaseContract.Sounds.CONTENT_URI, contentValues);
+        registerSoundObservable(context);
 
-        Intent intent = new Intent(context, MediaPlayService.class);
-        intent.putExtra(MediaPlayService.DataSourceController.KEY, MediaPlayService.DataSourceController.LOAD);
-        context.startService(intent);
+    }
 
+    private void registerSoundObservable(final Context context) {
+        if (observableSounds == null) {
+            observableSounds = new ContentObserver(new Handler(Looper.getMainLooper())) {
+                @Override
+                public void onChange(boolean selfChange, Uri uri) {
+                    Intent intent = new Intent(context, MediaPlayService.class);
+                    intent.putExtra(MediaPlayService.PlayController.LOAD, true);
+                    context.startService(intent);
+                    context.getContentResolver().unregisterContentObserver(this);
+
+                }
+            };
+            context.getContentResolver().registerContentObserver(DatabaseContract.Sounds.CONTENT_URI, true, observableSounds);
+        }
     }
 
 
     @Override
     public void startOrPause() {
         Intent intent = new Intent(App.getInstance(), MediaPlayService.class);
-        intent.putExtra(MediaPlayService.DataSourceController.IS_LIST, false);
+        intent.putExtra(MediaPlayService.PlayController.IS_LIST, false);
         intent.putExtra(MediaPlayService.PlayController.KEY, MediaPlayService.PlayController.PLAY);
-        intent.putExtra(MediaPlayService.DataSourceController.POSITION, lastClicedPosition);
+        intent.putExtra(MediaPlayService.PlayController.POSITION, lastClickedPosition);
 
         App.getInstance().startService(intent);
     }
@@ -105,16 +132,20 @@ public class ManagerSoundPlayer implements ControlPlayer {
 
     }
 
-    public void deleteTemporarySound() {
-        Intent intent = new Intent(App.getInstance(), MediaPlayService.class);
-        intent.putExtra(MediaPlayService.DataSourceController.KEY, MediaPlayService.DataSourceController.CLEAR_LIST_IN_DATABASE);
-        App.getInstance().startService(intent);
+    public void deleteTemporarySound(Context context) {
+//        Intent intent = new Intent(App.getInstance(), MediaPlayService.class);
+//        intent.putExtra(MediaPlayService.DataSourceController.KEY, MediaPlayService.DataSourceController.CLEAR_LIST_IN_DATABASE);
+//        App.getInstance().startService(intent);
+        context.getContentResolver().delete(
+                DatabaseContract.Sounds.CONTENT_URI,
+                null,
+                null);
     }
 
     public void updateViewPlayer() {
-            Intent intent = new Intent(App.getInstance(), MediaPlayService.class);
-            intent.putExtra(MediaPlayService.DataSourceController.KEY, MediaPlayService.DataSourceController.UPDATE_VIEW_PLAYER);
-            App.getInstance().startService(intent);
+        Intent intent = new Intent(App.getInstance(), MediaPlayService.class);
+        intent.putExtra(MediaPlayService.PlayController.KEY, MediaPlayService.PlayController.UPDATE_VIEW_PLAYER);
+        App.getInstance().startService(intent);
 
 
     }

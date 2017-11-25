@@ -2,7 +2,6 @@ package dmitriiserdun.gmail.com.musickiua.base;
 
 import android.app.Application;
 import android.content.Context;
-import android.net.Uri;
 import android.support.multidex.MultiDex;
 
 import com.danikula.videocache.HttpProxyCacheServer;
@@ -38,7 +37,7 @@ public class App extends Application {
     }
 
     private HttpProxyCacheServer newProxy() {
-        File file = new File("/storage/emulated/0", "iua");
+        File file = new File("/storage/sdcard1", "iua");
         return new HttpProxyCacheServer.Builder(this)
                 .fileNameGenerator(new FileNameGenerator() {
                     @Override

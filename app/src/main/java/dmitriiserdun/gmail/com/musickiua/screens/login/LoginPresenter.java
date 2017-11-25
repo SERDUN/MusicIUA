@@ -31,7 +31,7 @@ public class LoginPresenter implements LoginContract.WelcomePresenter {
 
     private void trySignIn() {
         Integer userId = Hawk.get(Const.USER_ID);
-        if (userId!=null) {
+        if (userId != null) {
             this.baseActivity.startActivity(new Intent(baseActivity.getApplication(), NavActivity.class));
         } else {
             soundManagerRepository = SoundManagerRepository.getInstance(RemoteSoundRepository.getInstance());
@@ -54,12 +54,18 @@ public class LoginPresenter implements LoginContract.WelcomePresenter {
     }
 
     private void login() throws IOException {
-        soundManagerRepository.login("serdun", "2856413razs").subscribe(new Action1<Integer>() {
+        view.showUI(false);
+        view.showMainLoader(true);
+        soundManagerRepository.login(view.getLogin(), view.getPassword()).subscribe(new Action1<Integer>() {
             @Override
             public void call(Integer userId) {
-                Hawk.put(Const.USER_ID, userId);
-
-                baseActivity.startActivity(new Intent(baseActivity.getApplication(), NavActivity.class));
+                // view.showUI(true);
+                //  view.showMainLoader(false);
+                if (userId != null) {
+                    Hawk.put(Const.USER_ID, userId);
+                    baseActivity.startActivity(new Intent(baseActivity.getApplication(), NavActivity.class));
+                    baseActivity.finish();
+                }
 
             }
 

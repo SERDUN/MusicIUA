@@ -11,11 +11,16 @@ import dmitriiserdun.gmail.com.musickiua.base.BaseView;
  */
 
 public class LoginContract {
+
     interface WelcomePresenter extends BasePresenter {
         void initCallbacks();
     }
 
     interface WelcomeView extends BaseView<WelcomePresenter> {
+        public void showMainLoader(boolean isShow);
+
+        public void showUI(boolean isShow);
+
         String getLogin();
 
         String getPassword();

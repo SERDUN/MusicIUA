@@ -1,6 +1,5 @@
 package dmitriiserdun.gmail.com.musickiua.screens.sounds;
 
-import android.support.v7.widget.LinearLayoutCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +9,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import dmitriiserdun.gmail.com.musickiua.R;
-import dmitriiserdun.gmail.com.musickiua.base.App;
 import dmitriiserdun.gmail.com.musickiua.model.Sound;
 import rx.functions.Action2;
 

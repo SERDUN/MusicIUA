@@ -5,18 +5,18 @@ package dmitriiserdun.gmail.com.musickiua.base.player;
  */
 
 public interface ControlPlayer {
-    public void startOrPause();
+     void startOrPause();
 
-    public void stop();
+     void stop();
 
-    public void resume();
+     void resume();
 
 
-    public void next();
+     void next();
 
-    public void back();
+     void back();
 
-    public void isRepeat(boolean repeat);
+     void isRepeat(boolean repeat);
 
 
 }
