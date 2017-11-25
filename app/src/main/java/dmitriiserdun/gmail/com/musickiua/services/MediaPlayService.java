@@ -31,7 +31,7 @@ public class MediaPlayService extends Service {
     private Handler handler = new Handler();
     private boolean statePlay = false;
     private Sound currentSound;
-    Notification status;
+    private Notification status;
 
 
     public final static String STATUS = "status";
@@ -41,13 +41,13 @@ public class MediaPlayService extends Service {
 
     public static class PlayController {
         public static String KEY = "play_controller";
+        public static String LOAD = "load_sound_with_database";
+        public static String POSITION = "position";
+        public static String IS_LIST = "is_list";
+
         public static int PLAY = 1;
         public static int NEXT = 5;
         public static int BACK = 6;
-        public static String LOAD = "load_sound_with_database";
-
-        public static String POSITION = "position";
-        public static String IS_LIST = "is_list";
         public static int UPDATE_VIEW_PLAYER = 3;
     }
 
@@ -237,7 +237,7 @@ public class MediaPlayService extends Service {
     }
 
     private void initSubscribe() {
-        timePositionCursor=new TimePositionCursor();
+        timePositionCursor = new TimePositionCursor();
         handler.removeCallbacks(timePositionCursor);
 
         handler.postDelayed(timePositionCursor, 50);

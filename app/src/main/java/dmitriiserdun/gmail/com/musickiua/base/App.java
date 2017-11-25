@@ -37,7 +37,7 @@ public class App extends Application {
     }
 
     private HttpProxyCacheServer newProxy() {
-        File file = new File("/storage/emulated/0", "iua");
+        File file = new File("/storage/sdcard1", "iua");
         return new HttpProxyCacheServer.Builder(this)
                 .fileNameGenerator(new FileNameGenerator() {
                     @Override
